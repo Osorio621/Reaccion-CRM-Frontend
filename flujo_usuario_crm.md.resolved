@@ -1,0 +1,313 @@
+# Guía de Uso — CRM Reactivos del Valle
+### Cómo funciona el sistema, paso a paso
+
+> Para ejecutivos de ventas y gerentes. Sin tecnicismos.
+
+---
+
+## ¿Qué es este sistema?
+
+El **CRM de Reactivos del Valle** es una plataforma web donde todo el equipo comercial registra, organiza y da seguimiento a sus clientes, prospectos, oportunidades de venta y visitas — todo en un solo lugar, accesible desde cualquier computadora con internet.
+
+---
+
+## 1. 🔐 Entrar al sistema
+
+El ejecutivo abre el navegador y accede a la dirección del sistema. Verá una pantalla de inicio de sesión donde escribe su **correo y contraseña**.
+
+Dependiendo de su rol, el sistema lo lleva automáticamente a su pantalla principal:
+
+| Rol | ¿Qué puede ver? |
+|---|---|
+| **Ejecutivo** | Solo sus propios clientes, oportunidades y visitas |
+| **Gerente** | Todo el equipo: puede ver y comparar a todos los ejecutivos |
+| **Administrador** | Control total: usuarios, catálogos y configuración del sistema |
+
+> Si el ejecutivo no ingresa durante más de **24 horas**, aparece una alerta visible para el gerente.
+
+---
+
+## 2. 🏠 Pantalla principal — El Dashboard
+
+Al entrar, lo primero que ve el usuario es el **tablero de indicadores**. Es un resumen visual del estado actual de las ventas.
+
+### ¿Qué muestra el Dashboard?
+
+```
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│  Pipeline    │  │  Ponderado   │  │  Cierran     │  │ Seguimientos │
+│  total       │  │  esperado    │  │  este mes    │  │  vencidos    │
+│  $2,450,000  │  │  $687,500    │  │  8 oport.    │  │  🔴 12       │
+└──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
+
+Cumplimiento mensual por ejecutivo:
+  Juan   ████████████░░░  76%
+  Ana    ████████████████ 102% ✅
+  Carlos ████░░░░░░░░░░░░  24% 🔴
+
+Visitas de esta semana:
+  Juan: 8 visitas  |  Ana: 5 visitas  |  Carlos: 2 visitas
+```
+
+- El **valor ponderado** es una estimación realista: multiplica el valor de cada oportunidad por la probabilidad de cerrarla.
+- Los **seguimientos vencidos** son compromisos que ya pasaron su fecha sin cerrarse.
+- Las **alertas de inactividad** muestran qué ejecutivos no han registrado nada en el sistema en más de un día.
+
+> El gerente usa este tablero en la **reunión semanal** para revisar el estado del equipo.
+
+---
+
+## 3. 👥 Clientes
+
+En esta sección el ejecutivo gestiona su base de clientes activos.
+
+### ¿Qué puede hacer?
+
+- **Buscar** un cliente por nombre, tipo o ejecutivo asignado
+- **Ver la ficha** completa de un cliente: datos de contacto, historial de visitas, oportunidades asociadas
+- **Registrar** un nuevo cliente llenando el formulario (nombre, tipo, contacto, teléfono, correo)
+- **Editar** los datos de un cliente existente
+- **Dar de baja** un cliente (no se borra, queda inactivo y se puede recuperar)
+
+> Un cliente dado de baja **no desaparece** del historial. El sistema guarda registro de todo.
+
+---
+
+## 4. 🔍 Prospectos
+
+Los prospectos son empresas o personas que aún no son clientes pero que el equipo está trabajando para convertir.
+
+### ¿Qué puede hacer?
+
+- **Registrar** un prospecto con: nombre del responsable, etapa en la que se encuentra, y cuál es la próxima acción a tomar
+- **Ver alertas** cuando la fecha de la próxima acción ya venció (aparece resaltado en rojo)
+- **Filtrar** por etapa, ejecutivo o fecha
+- Cuando un prospecto se convierte en cliente, se puede pasar a la sección de Clientes
+
+> Los prospectos **siempre deben tener** una próxima acción y una fecha definida. El sistema no permite guardar un prospecto incompleto.
+
+---
+
+## 5. 💼 Oportunidades
+
+Las oportunidades representan ventas potenciales concretas. Cada oportunidad está ligada a un cliente y tiene un valor económico estimado.
+
+### ¿Qué información lleva una oportunidad?
+
+Cada oportunidad **debe tener** los siguientes datos (el sistema no permite guardarla si falta alguno):
+
+1. **Cliente** al que va dirigida
+2. **Valor** estimado de la venta
+3. **Etapa** en la que se encuentra (Prospección, Presentación, Propuesta, Negociación, Cerrado)
+4. **Probabilidad** de cierre (viene de la etapa)
+5. **Fecha estimada de cierre**
+6. **Próxima acción** a realizar
+
+> Esto se llama la **Regla de Oro**: una oportunidad sin estos datos no existe en el sistema.
+
+---
+
+## 6. 📋 Pipeline — El tablero Kanban
+
+El **Pipeline** es la vista más importante para el equipo de ventas. Es un tablero visual donde cada columna representa una etapa del proceso de venta y cada tarjeta es una oportunidad.
+
+### ¿Cómo se ve?
+
+```
+┌──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+│ PROSPECCIÓN  │ PRESENTACIÓN │   PROPUESTA  │ NEGOCIACIÓN  │    CERRADO   │
+│  $5,000 est. │  $18,750 est.│  $45,000 est.│  $22,500 est.│ $120,000     │
+├──────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│ ┌──────────┐ │ ┌──────────┐ │ ┌──────────┐ │              │              │
+│ │ Lab Norte│ │ │ Hosp. Y  │ │ │ Clínica Z│ │              │              │
+│ │ $50,000  │ │ │ $75,000  │ │ │ $90,000  │ │              │              │
+│ │📅 15 Sep │ │ │📅 20 Sep │ │ │📅 30 Sep │ │              │              │
+│ │🔴 vencida│ │ │✅ al día │ │ │⚠️ hoy   │ │              │              │
+│ └──────────┘ │ └──────────┘ │ └──────────┘ │              │              │
+└──────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+- Cada **tarjeta** muestra el cliente, el valor de la oportunidad, la fecha de cierre y si hay seguimientos pendientes
+- El número en la parte de arriba de cada columna es el **valor esperado** (estimación realista considerando la probabilidad)
+- Los badges de colores indican el estado de los seguimientos:
+  - 🔴 **Vencido** — hay un compromiso que ya pasó su fecha
+  - ⚠️ **Hoy** — hay un compromiso que vence hoy
+  - ✅ **Al día** — todo en orden
+
+### ¿Cómo muevo una oportunidad de etapa?
+
+Simplemente **arrastrando la tarjeta** de una columna a otra. El sistema actualiza automáticamente la etapa y recalcula el valor esperado.
+
+### ¿Qué ve el ejecutivo vs el gerente?
+
+- El **ejecutivo** solo ve sus propias oportunidades
+- El **gerente** ve todo el equipo y puede filtrar por ejecutivo o período
+
+---
+
+## 7. 🚗 Visitas
+
+Después de cada visita a un cliente o prospecto, el ejecutivo la registra en el sistema.
+
+### ¿Qué se registra en una visita?
+
+El formulario tiene **7 campos obligatorios** (ninguno se puede dejar en blanco):
+
+1. ¿A quién se visitó? (cliente o prospecto)
+2. ¿Cuándo fue la visita? *(máximo 24 horas atrás — no se pueden registrar visitas de días anteriores)*
+3. ¿Cuál era el objetivo de la visita?
+4. ¿Qué necesidad detectó el ejecutivo?
+5. ¿Qué competencia estaba presente?
+6. ¿Cuál fue el resultado? (elige de una lista)
+7. ¿Generó una oportunidad? ¿Cuál fue el compromiso?
+
+> La restricción de las **24 horas** existe para garantizar que las visitas se registren en tiempo real, no días después.
+
+---
+
+## 8. 📅 Seguimientos
+
+Los seguimientos son los **compromisos** que el ejecutivo adquiere dentro de una oportunidad. Por ejemplo: "llamar el jueves", "enviar propuesta el viernes", "visitar la siguiente semana".
+
+### ¿Cómo funciona?
+
+- Cuando se crea un seguimiento, se le asigna una **fecha programada**
+- El sistema cuenta automáticamente **cuántos días lleva vencido** si no se cierra a tiempo
+- La **bandeja de vencidos** muestra todos los seguimientos que ya pasaron su fecha, ordenados por urgencia
+- Cuando el ejecutivo cumple el compromiso, hace clic en **"Cerrar"** y deja una nota de lo que ocurrió
+
+### Bandeja de vencidos:
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  SEGUIMIENTOS VENCIDOS                                               │
+├──────────────┬──────────────────────────┬────────────┬──────────────┤
+│  Oportunidad │  Compromiso              │  Vencido   │  Acción      │
+├──────────────┼──────────────────────────┼────────────┼──────────────┤
+│  Lab Norte   │  Llamar al gerente       │  🔴 3 días │  [Cerrar ✓]  │
+│  Hosp. Central│ Enviar propuesta formal │  🔴 1 día  │  [Cerrar ✓]  │
+│  Clínica Z   │  Confirmar demo          │  ⚠️ Hoy   │  [Cerrar ✓]  │
+└──────────────┴──────────────────────────┴────────────┴──────────────┘
+```
+
+---
+
+## 9. 💰 Ventas Mensuales
+
+En esta sección se registran y consultan los números reales de venta de cada ejecutivo mes a mes.
+
+### ¿Qué información maneja?
+
+- **Meta**: el objetivo de venta del mes (establecido por el gerente)
+- **Venta real**: lo que efectivamente se cerró
+- **Forecast**: la proyección de cierre para el resto del mes
+
+El sistema muestra automáticamente **gráficas comparativas** de meta vs real vs forecast por ejecutivo.
+
+> Solo puede existir **un registro por ejecutivo por mes**. El sistema no permite duplicados.
+
+---
+
+## 10. 📊 Reportes
+
+Desde la sección de Reportes, el gerente puede descargar información del sistema en formatos abiertos.
+
+### ¿Qué se puede exportar?
+
+- Lista de clientes
+- Oportunidades del pipeline
+- Visitas por período
+- Seguimientos cerrados y vencidos
+- Resumen de ventas por ejecutivo
+
+Los archivos se descargan en **Excel (CSV)** o en formato de datos estándar, listos para usarse en reuniones o presentaciones.
+
+---
+
+## 11. ⚙️ Administración *(solo para el Administrador)*
+
+El administrador del sistema tiene acceso a una sección especial donde puede:
+
+- **Gestionar usuarios**: crear cuentas, cambiar roles, activar o desactivar accesos
+- **Configurar catálogos**: las etapas del pipeline, tipos de cliente, resultados de visita y probabilidades son configurables sin necesidad de un programador
+- **Ver la bitácora de cambios**: un registro completo de quién hizo qué y cuándo en el sistema
+- **Generar respaldo manual**: además del respaldo automático semanal, el admin puede pedir uno en cualquier momento
+
+---
+
+## 🔄 El día a día de un ejecutivo
+
+Así luce un día típico de trabajo en el sistema:
+
+```
+Lunes 8:00 AM
+   │
+   ▼
+Abre el sistema → Ve el Dashboard
+   │  ¿Hay seguimientos vencidos?
+   │  Sí → Los revisa y cierra los que ya atendió
+   │
+   ▼
+Revisa el Pipeline
+   │  ¿Hay oportunidades que deba mover de etapa?
+   │  Sí → Arrastra las tarjetas a la nueva etapa
+   │
+   ▼
+Registra una visita del día anterior (máx. 24h)
+   │  Llena los 7 campos del formulario
+   │
+   ▼
+Crea un nuevo seguimiento para la semana
+   │  "Enviar propuesta a Lab Norte el miércoles"
+   │
+   ▼
+Si cerró una venta → La registra en Ventas Mensuales
+   │
+   ▼
+Cierra sesión
+```
+
+---
+
+## 🗓️ El lunes del Gerente — Reunión semanal
+
+```
+Lunes 9:00 AM — Reunión de equipo
+   │
+   ▼
+Abre el Dashboard
+   │  Revisa: cumplimiento mensual por ejecutivo
+   │           seguimientos vencidos del equipo
+   │           alerta de inactividad (¿alguien no entró?)
+   │           visitas de la semana
+   │
+   ▼
+Abre el Pipeline
+   │  Filtra por ejecutivo uno a uno
+   │  Revisa el valor ponderado de cada columna
+   │  Identifica oportunidades que cierran este mes
+   │
+   ▼
+Descarga el reporte de la semana (PDF/CSV)
+   │  Lo usa como base de la presentación
+   │
+   ▼
+Toma decisiones y asigna compromisos al equipo
+```
+
+---
+
+## ✅ Reglas clave que el sistema aplica automáticamente
+
+| Regla | Lo que hace el sistema |
+|---|---|
+| **Nada sin datos** | No deja guardar oportunidades ni visitas incompletas |
+| **Visitas en tiempo real** | No acepta visitas de más de 24 horas atrás |
+| **Sin borrado permanente** | Los clientes y prospectos nunca se eliminan, solo se desactivan |
+| **Un número por mes** | Cada ejecutivo tiene un solo registro de venta por mes |
+| **Todo queda registrado** | Cualquier cambio (edición, movimiento de etapa) queda en la bitácora |
+| **Respaldo automático** | El sistema se respalda solo cada semana |
+
+---
+
+*CRM Reactivos del Valle — Guía para usuarios · v1.0 · Agosto 2026*

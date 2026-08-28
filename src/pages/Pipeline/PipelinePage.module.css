@@ -1,0 +1,559 @@
+/* PipelinePage.module.css */
+
+/* ========== BASE ========== */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg) 100%);
+  min-height: 100vh;
+}
+
+/* ========== LOADING ========== */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+}
+
+.loadingText {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+/* ========== ERROR ========== */
+.errorContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+/* ========== HEADER ========== */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titleIcon {
+  font-size: 1.5rem;
+}
+
+.headerBadges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.badgePrimary {
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.badgeSuccess {
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+  border-color: rgba(5, 150, 105, 0.2);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tipIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* ========== LOADING HINT ========== */
+.loadingHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.loadingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* ========== SUMMARY CHIPS ========== */
+.pipelineSummary {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.summaryChip {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  min-width: 120px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  transition: all 0.2s ease;
+}
+
+.summaryChip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.summaryChipLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.summaryChipValue {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.summaryChipPrimary {
+  border-color: rgba(37, 99, 235, 0.25);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), white);
+}
+
+.summaryChipPrimary .summaryChipValue {
+  color: #2563eb;
+}
+
+.summaryChipAccent {
+  border-color: rgba(5, 150, 105, 0.2);
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.05), white);
+}
+
+.summaryChipAccent .summaryChipValue {
+  color: #059669;
+}
+
+.summaryChipInfo {
+  border-color: rgba(139, 92, 246, 0.2);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), white);
+}
+
+.summaryChipInfo .summaryChipValue {
+  color: #7c3aed;
+}
+
+/* ========== DISTRIBUTION BAR ========== */
+.distributionBar {
+  display: flex;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-border);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.distributionSegment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  min-width: 40px;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: help;
+}
+
+.distributionSegment:hover {
+  filter: brightness(1.1);
+  transform: scaleY(1.05);
+}
+
+.distributionLabel {
+  opacity: 0.9;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.distributionCount {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+}
+
+/* ========== FILTERS TOOLBAR ========== */
+.filtersToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  flex-wrap: wrap;
+}
+
+.filtersLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filtersBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+}
+
+.filtersGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filterField {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 200px;
+  max-width: 240px;
+}
+
+.filterIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  pointer-events: none;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.filterSelect {
+  width: 100%;
+  padding-left: 32px !important;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  height: 38px;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.filterSelect:hover {
+  border-color: var(--color-text-muted);
+}
+
+.filterSelect:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  outline: none;
+}
+
+.filtersRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.clearFiltersBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearFiltersBtn:hover {
+  background: rgba(37, 99, 235, 0.05);
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.resultCount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+}
+
+.resultDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ========== BOARD WRAPPER ========== */
+.boardWrapper {
+  flex: 1;
+  min-height: 500px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s ease;
+}
+
+.boardWrapper:hover {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .summaryChip {
+    min-width: 100px;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .summaryChipValue {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+  }
+
+  .headerTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .pipelineSummary {
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .summaryChip {
+    flex: 1;
+    min-width: 80px;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .summaryChipValue {
+    font-size: 0.9rem;
+  }
+
+  .filtersToolbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.75rem;
+  }
+
+  .filtersLeft {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .filtersGroup {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filterField {
+    min-width: unset;
+    max-width: unset;
+    width: 100%;
+  }
+
+  .filtersRight {
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .boardWrapper {
+    padding: 0.75rem;
+    border-radius: 12px;
+    margin: 0 -0.75rem;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+
+  .distributionBar {
+    height: 32px;
+  }
+
+  .distributionLabel {
+    font-size: 0.6rem;
+  }
+
+  .distributionCount {
+    font-size: 0.55rem;
+    padding: 0.05rem 0.3rem;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .headerBadges {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.2rem;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+  }
+
+  .summaryChip {
+    min-width: 60px;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .summaryChipLabel {
+    font-size: 0.6rem;
+  }
+
+  .summaryChipValue {
+    font-size: 0.8rem;
+  }
+
+  .filtersBadge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .filterSelect {
+    font-size: 0.8rem;
+    height: 34px;
+  }
+}

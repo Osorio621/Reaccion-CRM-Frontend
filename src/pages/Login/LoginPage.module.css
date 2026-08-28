@@ -1,0 +1,515 @@
+/* LoginPage.module.css - Estilos compartidos para Login, OlvidePassword y RestablecerPassword */
+
+/* ========== BASE ========== */
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme='dark'] .page {
+  background: linear-gradient(135deg, #0b1220 0%, #0a0f1f 100%);
+}
+
+/* Decoración de fondo */
+.backgroundDecoration {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  top: -200px;
+  right: -200px;
+  pointer-events: none;
+}
+
+.backgroundDecoration::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(46, 204, 113, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  bottom: -300px;
+  left: -200px;
+}
+
+/* Tarjeta principal */
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 2rem;
+  padding: 2.5rem 2.8rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme='dark'] .card {
+  background: rgba(19, 28, 48, 0.85);
+  border: 1px solid rgba(38, 51, 77, 0.7);
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 2rem 1.5rem;
+    border-radius: 1.5rem;
+  }
+}
+
+/* ========== ENCABEZADO ========== */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  display: block;
+  max-height: 100px;
+  width: auto;
+  margin: 0 auto 0.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin: 0.25rem 0 0;
+  font-weight: 400;
+}
+
+/* ========== FORMULARIO ========== */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ========== ERRORES ========== */
+.formError {
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #b91c1c;
+}
+
+.errorIcon {
+  font-size: 1.1rem;
+}
+
+/* ========== OPCIONES (Login) ========== */
+.options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  font-size: 0.9rem;
+}
+
+.rememberMe {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.rememberMe input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #3b82f6;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.forgotLink {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.forgotLink:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* ========== INFO BOX (OlvidePassword) ========== */
+.infoBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(37, 99, 235, 0.06);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.infoBox span {
+  font-size: 1.2rem;
+  margin-top: 0.1rem;
+}
+
+.infoBox p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ========== INDICADOR DE FUERZA (RestablecerPassword) ========== */
+.passwordContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.strengthIndicator {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: -0.25rem;
+}
+
+.strengthBar {
+  width: 100%;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.strengthFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+/* ========== REQUISITOS DE CONTRASEÑA ========== */
+.passwordRequirements {
+  background: var(--color-bg);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.requirementsTitle {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.requirementsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 1rem;
+}
+
+@media (max-width: 480px) {
+  .requirementsList {
+    grid-template-columns: 1fr;
+  }
+}
+
+.requirementsList li {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.requirementMet {
+  color: #10b981 !important;
+}
+
+/* ========== BOTONES ========== */
+/* Botón submit del Login (azul) */
+.submit {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+}
+
+.submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Botón submit de OlvidePassword (ámbar) */
+.submitForgot {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: none;
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+}
+
+.submitForgot:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+.submitForgot:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitForgot:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Botón submit de RestablecerPassword (verde) */
+.submitReset {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+.submitReset:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.submitReset:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitReset:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ========== ENLACES ========== */
+.link {
+  display: block;
+  text-align: center;
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  margin-top: 0.5rem;
+}
+
+.link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.backLink {
+  text-align: center;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+  padding: 0.5rem;
+}
+
+.backLink:hover {
+  color: #3b82f6;
+}
+
+/* ========== PIE DE PÁGINA (Login) ========== */
+.footerText {
+  text-align: center;
+  margin-top: 1.75rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.registerLink {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.registerLink:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* ========== ESTADO DE ÉXITO ========== */
+.successContainer {
+  text-align: center;
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.successIcon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.successMessage {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin: 0.5rem 0 0;
+}
+
+.successEmail {
+  font-weight: 700;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  margin: 0.25rem 0 1rem;
+  background: rgba(37, 99, 235, 0.06);
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  display: inline-block;
+}
+
+.successDetails {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  text-align: left;
+  margin: 1.5rem 0;
+}
+
+.successDetails span {
+  font-size: 1.2rem;
+}
+
+.successDetails p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.successDetails strong {
+  color: var(--color-text);
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.primaryLink {
+  display: inline-block;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  text-decoration: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.primaryLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.secondaryLink {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s;
+  text-decoration: underline;
+}
+
+.secondaryLink:hover {
+  color: #3b82f6;
+}

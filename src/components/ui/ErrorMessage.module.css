@@ -1,0 +1,26 @@
+.error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--spacing-md);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.retry {
+  margin-left: auto;
+  border: none;
+  background: var(--color-danger);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.retry:hover {
+  opacity: 0.9;
+}

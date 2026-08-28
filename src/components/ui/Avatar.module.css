@@ -1,0 +1,16 @@
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.iniciales {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary, #2563eb);
+  color: #fff;
+  font-weight: 600;
+  user-select: none;
+}

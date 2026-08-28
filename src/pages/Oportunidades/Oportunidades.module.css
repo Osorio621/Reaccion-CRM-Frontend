@@ -1,0 +1,1204 @@
+/* Oportunidades.module.css - Estilos globales para el módulo de Oportunidades */
+
+/* ============================================================
+   PÁGINA PRINCIPAL - OportunidadesPage
+   ============================================================ */
+
+/* ---------- BASE ---------- */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+}
+
+[data-theme='dark'] .page {
+  background: var(--color-bg);
+}
+
+/* ---------- TOOLBAR ---------- */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toolbarIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
+  color: #2563eb;
+}
+
+.toolbarInfo h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.toolbarInfo p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.toolbarActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.newButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+}
+
+.newButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+}
+
+/* ---------- STATS GRID ---------- */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.statIconSuccess {
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+}
+
+.statIconInfo {
+  background: rgba(139, 92, 246, 0.08);
+  color: #7c3aed;
+}
+
+.statIconWarning {
+  background: rgba(245, 158, 11, 0.08);
+  color: #d97706;
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.statValue {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* ---------- LOADING ---------- */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+}
+
+.loadingContainer p {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ---------- TABLE ---------- */
+.tableContainer {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.table {
+  width: 100%;
+}
+
+.actionsColumn {
+  width: 60px;
+}
+
+/* ---------- OPORTUNIDAD CELL ---------- */
+.oportunidadCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.oportunidadNombre {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.oportunidadDescripcion {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- CLIENTE CELL ---------- */
+.clienteCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.clienteAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.clienteNombre {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* ---------- VALOR CELL ---------- */
+.valorCell {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.valorCellSmall {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* ---------- ETAPA CELL ---------- */
+.etapaCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.etapaDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.etapaDotPrimary { background: #2563eb; }
+.etapaDotSuccess { background: #10b981; }
+.etapaDotWarning { background: #f59e0b; }
+.etapaDotDanger { background: #ef4444; }
+.etapaDotInfo { background: #8b5cf6; }
+.etapaDotGray { background: #94a3b8; }
+
+.etapaNombre {
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+/* ---------- STATUS BADGE ---------- */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+}
+
+/* ---------- ROW ACTIONS ---------- */
+.rowActions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.iconBtn:hover:not(:disabled) {
+  color: #2563eb;
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.iconBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.iconBtnSuccess:hover:not(:disabled) {
+  color: #10b981;
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.iconBtnDanger:hover:not(:disabled) {
+  color: #ef4444;
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.04);
+}
+
+/* ---------- EMPTY STATE ---------- */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.emptyState svg {
+  color: var(--color-text-muted);
+}
+
+.emptyState p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+
+/* ============================================================
+   MODALES - OportunidadFormModal y CerrarOportunidadModal
+   ============================================================ */
+
+/* ---------- BASE MODAL ---------- */
+.modal :global(.modal-content) {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ---------- FORM HEADER ---------- */
+.formHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-bottom: 1px solid var(--color-border);
+}
+
+[data-theme='dark'] .formHeader {
+  background: var(--color-surface);
+}
+
+.formHeaderIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  flex-shrink: 0;
+}
+
+.formHeaderIconSuccess {
+  background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.formHeaderIconWarning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.formHeaderInfo h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.formHeaderInfo p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* ========== FORM HEADER BADGE ========== */
+.formHeaderBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* ---------- FORM BODY ---------- */
+.formBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+
+.formBodyCompact {
+  padding: 1rem 1.5rem;
+}
+
+/* ---------- FORM SECTIONS ---------- */
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-bg);
+}
+
+.sectionTitle svg {
+  color: #2563eb;
+}
+
+/* ========== SECTION BADGE ========== */
+.sectionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+  padding: 0.1rem 0.5rem;
+  border-radius: 12px;
+}
+
+/* ========== PROBABILIDAD BADGE ========== */
+.probabilidadBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  padding: 0.1rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* ========== ETAPA BADGE ========== */
+.etapaBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  padding: 0.1rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* ---------- FORM ROW ---------- */
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ---------- TEXTAREA ---------- */
+.textareaInput :global(textarea) {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* ---------- PONDERADO INFO ---------- */
+.ponderadoInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ponderadoLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ponderadoLabel {
+  font-weight: 600;
+  color: #065f46;
+}
+
+.ponderadoValue {
+  font-weight: 700;
+  color: #059669;
+  font-size: 1rem;
+}
+
+.ponderadoRight {
+  display: flex;
+  align-items: center;
+}
+
+.ponderadoHint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ========== CLIENTE PRESELECCIONADO ========== */
+.clientePreseleccionado {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+}
+
+.clientePreseleccionadoAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.clientePreseleccionadoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.clientePreseleccionadoNombre {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.clientePreseleccionadoEmail {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* ========== CLIENTE SEARCH ========== */
+.clienteSelectContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.clienteSearch {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+}
+
+.clienteSearchInput {
+  width: 100%;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: var(--color-surface);
+  transition: all 0.2s ease;
+}
+
+.clienteSearchInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+}
+
+.clearSearch {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearSearch:hover {
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+}
+
+.sinResultados {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+/* ---------- RESULTADO (Cerrar Modal) ---------- */
+.resultadoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resultadoLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resultadoOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.resultadoOption {
+  position: relative;
+  cursor: pointer;
+}
+
+.resultadoOption input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.resultadoContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 0.5rem;
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  background: var(--color-surface);
+}
+
+.resultadoOption:hover .resultadoContent {
+  border-color: #94a3b8;
+}
+
+.resultadoOption input[type="radio"]:checked + .resultadoContent {
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.03);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+}
+
+.resultadoActive .resultadoContent {
+  border-color: #2563eb !important;
+  background: rgba(37, 99, 235, 0.03) !important;
+}
+
+.resultadoIconGanada {
+  color: #10b981;
+}
+
+.resultadoIconPerdida {
+  color: #ef4444;
+}
+
+.resultadoNombre {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.resultadoDesc {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.resultadoError {
+  font-size: 0.8rem;
+  color: #dc2626;
+}
+
+/* ---------- MOTIVO (Cerrar Modal) ---------- */
+.motivoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.motivoHint {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.motivoHint svg {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+/* ---------- SUCCESS MESSAGE ---------- */
+.successMessage {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #065f46;
+}
+
+.successMessage svg {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+/* ---------- OPORTUNIDAD INFO (Cerrar Modal) ---------- */
+.oportunidadInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-bg);
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+}
+
+.oportunidadBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.oportunidadNombre {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.oportunidadCliente {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 0.1rem;
+}
+
+/* ---------- ERROR ---------- */
+.errorContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin: 0 1.5rem 0.5rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+.errorContainer svg {
+  flex-shrink: 0;
+}
+
+/* ---------- FORM FOOTER ---------- */
+.formFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+}
+
+.footerLeft {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.footerHint {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cancelBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancelBtn:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitBtnPrimary {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.submitBtnPrimary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+
+.submitBtnSuccess {
+  background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.submitBtnSuccess:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+.submitBtnDanger {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+}
+
+.submitBtnDanger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* ---------- TABLET ---------- */
+@media (max-width: 1024px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+  }
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 768px) {
+  .page {
+    padding: 0.75rem;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbarLeft {
+    gap: 0.75rem;
+  }
+
+  .toolbarIcon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .toolbarIcon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .toolbarInfo h1 {
+    font-size: 1.4rem;
+  }
+
+  .toolbarInfo p {
+    font-size: 0.85rem;
+  }
+
+  .toolbarActions {
+    width: 100%;
+  }
+
+  .newButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .statCard {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .statValue {
+    font-size: 0.95rem;
+  }
+
+  .oportunidadDescripcion {
+    max-width: 150px;
+  }
+
+  /* Modal responsive */
+  .formHeader {
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .formHeaderIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .formHeaderIcon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .formHeaderInfo h3 {
+    font-size: 1rem;
+  }
+
+  .formHeaderInfo p {
+    font-size: 0.8rem;
+  }
+
+  .formBody {
+    padding: 1rem;
+  }
+
+  .formBodyCompact {
+    padding: 0.75rem 1rem;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .resultadoOptions {
+    grid-template-columns: 1fr;
+  }
+
+  .errorContainer {
+    margin: 0 1rem 0.5rem;
+  }
+
+  .ponderadoInfo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+  }
+
+  .oportunidadInfo {
+    flex-wrap: wrap;
+  }
+
+  /* FOOTER RESPONSIVE */
+  .formFooter {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .footerLeft {
+    order: 2;
+    justify-content: center;
+  }
+
+  .footerRight {
+    order: 1;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .footerRight .cancelBtn,
+  .footerRight .submitBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .formHeaderBadge {
+    display: none;
+  }
+
+  .sectionBadge,
+  .probabilidadBadge,
+  .etapaBadge {
+    display: none;
+  }
+
+  .clientePreseleccionado {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- MOBILE SMALL ---------- */
+@media (max-width: 480px) {
+  .page {
+    padding: 0.5rem;
+  }
+
+  .toolbarInfo h1 {
+    font-size: 1.2rem;
+  }
+
+  .toolbarInfo p {
+    font-size: 0.8rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+
+  .statCard {
+    padding: 0.4rem 0.6rem;
+    gap: 0.5rem;
+  }
+
+  .statIcon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .statIcon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .statValue {
+    font-size: 0.85rem;
+  }
+
+  .statLabel {
+    font-size: 0.6rem;
+  }
+
+  .oportunidadDescripcion {
+    max-width: 100px;
+    font-size: 0.7rem;
+  }
+
+  .clienteAvatar {
+    width: 22px;
+    height: 22px;
+    font-size: 0.55rem;
+  }
+
+  .etapaDot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .etapaNombre {
+    font-size: 0.75rem;
+  }
+
+  .valorCell {
+    font-size: 0.85rem;
+  }
+
+  .iconBtn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .iconBtn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Modal responsive small */
+  .formHeader {
+    padding: 0.75rem;
+  }
+
+  .formHeaderInfo h3 {
+    font-size: 0.9rem;
+  }
+
+  .formHeaderInfo p {
+    font-size: 0.7rem;
+  }
+
+  .formBody {
+    padding: 0.75rem;
+  }
+
+  .clienteSearchInput {
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem 0.4rem 2.2rem;
+  }
+
+  .sinResultados {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+}

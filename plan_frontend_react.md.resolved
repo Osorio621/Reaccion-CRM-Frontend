@@ -1,0 +1,493 @@
+# Plan de Desarrollo Frontend — CRM Reactivos del Valle
+
+> **Stack:** React 18 · Vite 5 · React Router v6 · Axios · TanStack Query v5 · Zustand · React Hook Form · Zod · Recharts · DnD Kit · CSS Modules
+>
+> **Backend ya disponible en:** `http://localhost:8080` (Spring Boot 4 · JWT · OpenAPI en `/swagger-ui.html`)
+
+---
+
+## 1. Inicialización del Proyecto
+
+```bash
+# Desde la raíz del repo (mismo nivel que el backend)
+npx create-vite@latest crm-reactivos-frontend -- --template react
+cd crm-reactivos-frontend
+npm install
+
+# Dependencias de producción
+npm install axios @tanstack/react-query react-router-dom zustand \
+  react-hook-form zod @hookform/resolvers \
+  recharts @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities \
+  date-fns lucide-react
+
+# Dev
+npm install -D @tanstack/react-query-devtools
+```
+
+### Variables de entorno
+
+```bash
+# .env.development
+VITE_API_BASE_URL=http://localhost:8080/api
+
+# .env.production
+VITE_API_BASE_URL=https://tu-dominio.com/api
+```
+
+---
+
+## 2. Estructura de Carpetas
+
+```
+crm-reactivos-frontend/
+├── index.html
+├── vite.config.js
+├── package.json
+├── .env.development
+├── .env.production
+└── src/
+    ├── main.jsx                   ← QueryClientProvider + BrowserRouter
+    ├── App.jsx                    ← Rutas protegidas por rol
+    ├── api/
+    │   ├── axiosClient.js         ← instancia Axios + interceptores JWT
+    │   ├── auth.api.js
+    │   ├── clientes.api.js
+    │   ├── prospectos.api.js
+    │   ├── oportunidades.api.js
+    │   ├── pipeline.api.js
+    │   ├── visitas.api.js
+    │   ├── seguimientos.api.js
+    │   ├── ventas.api.js
+    │   ├── dashboard.api.js
+    │   ├── catalogos.api.js
+    │   ├── usuarios.api.js
+    │   └── auditoria.api.js
+    ├── store/
+    │   └── authStore.js           ← Zustand: usuario, rol, tokens
+    ├── hooks/
+    │   ├── useAuth.js
+    │   ├── useClientes.js
+    │   ├── useOportunidades.js
+    │   ├── usePipeline.js
+    │   ├── useVisitas.js
+    │   ├── useSeguimientos.js
+    │   ├── useVentas.js
+    │   ├── useDashboard.js
+    │   └── useCatalogos.js
+    ├── components/
+    │   ├── layout/
+    │   │   ├── MainLayout.jsx
+    │   │   ├── Sidebar.jsx
+    │   │   ├── Header.jsx
+    │   │   └── ProtectedRoute.jsx
+    │   ├── ui/
+    │   │   ├── Button.jsx
+    │   │   ├── Input.jsx
+    │   │   ├── Modal.jsx
+    │   │   ├── Table.jsx
+    │   │   ├── Badge.jsx
+    │   │   ├── Spinner.jsx
+    │   │   └── ErrorMessage.jsx
+    │   ├── kanban/
+    │   │   ├── KanbanBoard.jsx
+    │   │   ├── KanbanColumn.jsx
+    │   │   └── KanbanCard.jsx
+    │   └── charts/
+    │       ├── MetaVsRealChart.jsx
+    │       └── PipelineChart.jsx
+    ├── pages/
+    │   ├── Login/
+    │   ├── Dashboard/
+    │   ├── Pipeline/
+    │   ├── Clientes/
+    │   ├── Prospectos/
+    │   ├── Oportunidades/
+    │   ├── Visitas/
+    │   ├── Seguimientos/
+    │   ├── Ventas/
+    │   ├── Reportes/
+    │   └── Admin/
+    ├── utils/
+    │   └── errorHandler.js
+    └── styles/
+        ├── global.css
+        └── variables.css
+```
+
+---
+
+## 3. Capa de API — Conexión con el Backend
+
+### 3.1 axiosClient.js — Configuración con interceptores JWT
+
+```js
+// src/api/axiosClient.js
+import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
+
+const axiosClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+});
+
+// REQUEST: agrega el Bearer token automáticamente
+axiosClient.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().accessToken;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// RESPONSE: maneja 401 y hace refresh automático
+axiosClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const original = error.config;
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+      try {
+        const refreshToken = useAuthStore.getState().refreshToken;
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
+          { refreshToken }
+        );
+        useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
+        original.headers.Authorization = `Bearer ${data.accessToken}`;
+        return axiosClient(original);
+      } catch {
+        useAuthStore.getState().logout();
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axiosClient;
+```
+
+### 3.2 Módulos de API mapeados a los endpoints reales
+
+```js
+// src/api/auth.api.js
+import axiosClient from './axiosClient';
+export const login   = (data) => axiosClient.post('/auth/login', data);
+export const refresh = (data) => axiosClient.post('/auth/refresh', data);
+export const logout  = ()     => axiosClient.post('/auth/logout');
+
+// src/api/clientes.api.js
+import axiosClient from './axiosClient';
+export const getClientes    = (p) => axiosClient.get('/clientes', { params: p });
+export const getCliente     = (id) => axiosClient.get(`/clientes/${id}`);
+export const createCliente  = (d) => axiosClient.post('/clientes', d);
+export const updateCliente  = (id, d) => axiosClient.put(`/clientes/${id}`, d);
+export const deleteCliente  = (id) => axiosClient.delete(`/clientes/${id}`); // borrado lógico
+
+// src/api/oportunidades.api.js
+import axiosClient from './axiosClient';
+export const getOportunidades  = (p) => axiosClient.get('/oportunidades', { params: p });
+export const createOportunidad = (d) => axiosClient.post('/oportunidades', d);
+export const updateOportunidad = (id, d) => axiosClient.put(`/oportunidades/${id}`, d);
+export const cambiarEtapa      = (id, d) => axiosClient.patch(`/oportunidades/${id}/etapa`, d);
+
+// src/api/pipeline.api.js
+import axiosClient from './axiosClient';
+export const getPipeline = () => axiosClient.get('/pipeline');
+
+// src/api/visitas.api.js
+import axiosClient from './axiosClient';
+export const getVisitas   = (p) => axiosClient.get('/visitas', { params: p });
+export const createVisita = (d) => axiosClient.post('/visitas', d);
+export const updateVisita = (id, d) => axiosClient.put(`/visitas/${id}`, d);
+
+// src/api/seguimientos.api.js
+import axiosClient from './axiosClient';
+export const getSeguimientos        = (p) => axiosClient.get('/seguimientos', { params: p });
+export const getSeguimientosVencidos= ()  => axiosClient.get('/seguimientos/vencidos');
+export const createSeguimiento      = (d) => axiosClient.post('/seguimientos', d);
+export const cerrarSeguimiento      = (id, d) => axiosClient.patch(`/seguimientos/${id}/cerrar`, d);
+
+// src/api/ventas.api.js
+import axiosClient from './axiosClient';
+export const getVentas   = (p) => axiosClient.get('/ventas', { params: p });
+export const createVenta = (d) => axiosClient.post('/ventas', d);
+export const updateVenta = (id, d) => axiosClient.put(`/ventas/${id}`, d);
+
+// src/api/dashboard.api.js
+import axiosClient from './axiosClient';
+export const getDashboardResumen = () => axiosClient.get('/dashboard/resumen');
+
+// src/api/catalogos.api.js — requiere rol ADMIN
+import axiosClient from './axiosClient';
+export const getCatalogos   = (p) => axiosClient.get('/admin/catalogos', { params: p });
+export const createCatalogo = (d) => axiosClient.post('/admin/catalogos', d);
+
+// src/api/usuarios.api.js — requiere rol ADMIN
+import axiosClient from './axiosClient';
+export const getUsuarios   = () => axiosClient.get('/admin/usuarios');
+export const createUsuario = (d) => axiosClient.post('/admin/usuarios', d);
+
+// src/api/auditoria.api.js — requiere rol ADMIN
+import axiosClient from './axiosClient';
+export const getAuditoria = (p) => axiosClient.get('/admin/auditoria', { params: p });
+```
+
+---
+
+## 4. Estado Global — Zustand (authStore)
+
+```js
+// src/store/authStore.js
+import { create } from 'zustand';
+
+export const useAuthStore = create((set) => ({
+  accessToken:  null,
+  refreshToken: null,
+  usuario:      null,   // { id, nombre, email, rol }
+  rol:          null,   // 'EJECUTIVO' | 'GERENTE' | 'ADMIN'
+
+  setAuth: (data) => set({
+    accessToken:  data.accessToken,
+    refreshToken: data.refreshToken,
+    usuario:      data.usuario,
+    rol:          data.usuario.rol,
+  }),
+
+  setTokens: (accessToken, refreshToken) => set({ accessToken, refreshToken }),
+
+  logout: () => set({ accessToken: null, refreshToken: null, usuario: null, rol: null }),
+}));
+```
+
+> **Seguridad:** Los tokens viven **solo en memoria** (Zustand), nunca en `localStorage`. Al recargar la página el usuario vuelve al login — esto es intencional según la convención del equipo.
+
+---
+
+## 5. Enrutamiento y Rutas Protegidas
+
+```jsx
+// src/components/layout/ProtectedRoute.jsx
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
+
+export default function ProtectedRoute({ roles }) {
+  const { accessToken, rol } = useAuthStore();
+  if (!accessToken) return <Navigate to="/login" replace />;
+  if (roles && !roles.includes(rol)) return <Navigate to="/dashboard" replace />;
+  return <Outlet />;
+}
+```
+
+```jsx
+// src/App.jsx (estructura de rutas)
+<BrowserRouter>
+  <Routes>
+    <Route path="/login" element={<LoginPage />} />
+    <Route element={<ProtectedRoute />}>
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard"    element={<DashboardPage />} />
+        <Route path="/pipeline"     element={<PipelinePage />} />
+        <Route path="/clientes"     element={<ClientesPage />} />
+        <Route path="/prospectos"   element={<ProspectosPage />} />
+        <Route path="/oportunidades"element={<OportunidadesPage />} />
+        <Route path="/visitas"      element={<VisitasPage />} />
+        <Route path="/seguimientos" element={<SeguimientosPage />} />
+        <Route path="/ventas"       element={<VentasPage />} />
+        <Route path="/reportes"     element={<ReportesPage />} />
+        {/* Solo ADMIN */}
+        <Route element={<ProtectedRoute roles={['ADMIN']} />}>
+          <Route path="/admin" element={<AdminPage />} />
+        </Route>
+      </Route>
+    </Route>
+    <Route path="*" element={<Navigate to="/" replace />} />
+  </Routes>
+</BrowserRouter>
+```
+
+---
+
+## 6. Hooks con TanStack Query
+
+```js
+// src/hooks/useDashboard.js
+import { useQuery } from '@tanstack/react-query';
+import { getDashboardResumen } from '../api/dashboard.api';
+
+export function useDashboard() {
+  return useQuery({
+    queryKey: ['dashboard'],
+    queryFn: () => getDashboardResumen().then(r => r.data),
+    staleTime: 30_000,
+  });
+}
+
+// src/hooks/useOportunidades.js
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import * as api from '../api/oportunidades.api';
+
+export function useOportunidades(params) {
+  return useQuery({
+    queryKey: ['oportunidades', params],
+    queryFn: () => api.getOportunidades(params).then(r => r.data),
+  });
+}
+
+export function useCreateOportunidad() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: api.createOportunidad,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['oportunidades'] });
+      qc.invalidateQueries({ queryKey: ['pipeline'] });
+    },
+  });
+}
+
+export function useCambiarEtapa() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => api.cambiarEtapa(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['pipeline'] });
+      qc.invalidateQueries({ queryKey: ['oportunidades'] });
+    },
+  });
+}
+
+// src/hooks/useSeguimientos.js
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import * as api from '../api/seguimientos.api';
+
+export function useSeguimientosVencidos() {
+  return useQuery({
+    queryKey: ['seguimientos', 'vencidos'],
+    queryFn: () => api.getSeguimientosVencidos().then(r => r.data),
+    refetchInterval: 60_000,  // actualiza cada minuto
+  });
+}
+
+export function useCerrarSeguimiento() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => api.cerrarSeguimiento(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['seguimientos'] }),
+  });
+}
+```
+
+---
+
+## 7. Manejo de Errores del Backend
+
+El backend retorna errores con esta forma:
+
+```json
+{
+  "status": 400,
+  "error": "VALIDACION_FALLIDA",
+  "mensaje": "La oportunidad debe tener valor, etapa...",
+  "campos": { "probabilidad": "Campo obligatorio" }
+}
+```
+
+```js
+// src/utils/errorHandler.js
+export function extractErrorMessage(error) {
+  const data = error?.response?.data;
+  if (!data) return 'Error de conexión con el servidor.';
+  if (data.campos) {
+    return Object.entries(data.campos)
+      .map(([campo, msg]) => `${campo}: ${msg}`)
+      .join(', ');
+  }
+  return data.mensaje || 'Error inesperado.';
+}
+```
+
+Úsalo en cualquier mutación:
+
+```js
+const mutation = useMutation({
+  mutationFn: createOportunidad,
+  onError: (error) => alert(extractErrorMessage(error)),
+});
+```
+
+---
+
+## 8. main.jsx — Punto de Entrada
+
+```jsx
+// src/main.jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import App from './App';
+import './styles/global.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: 1, staleTime: 10_000 } },
+});
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  </React.StrictMode>
+);
+```
+
+---
+
+## 9. Roadmap de Implementación por Fases
+
+| Fase | Tareas | Prioridad |
+|------|--------|-----------|
+| **F1 — Fundación** | Proyecto Vite, deps, `axiosClient`, `authStore`, `ProtectedRoute`, `MainLayout` | 🔴 Alta |
+| **F2 — Login** | `LoginPage` con RHF + Zod, `POST /auth/login`, tokens en Zustand, redirect por rol | 🔴 Alta |
+| **F3 — Dashboard** | `GET /dashboard/resumen`, tarjetas KPI, tabla vencidos, alertas inactividad | 🔴 Alta |
+| **F4 — Clientes** | Tabla paginada, búsqueda, CRUD, borrado lógico | 🟠 Media-Alta |
+| **F5 — Pipeline** | `GET /pipeline`, DnD Kit, `PATCH /oportunidades/{id}/etapa` | 🟠 Media-Alta |
+| **F6 — Prospectos** | Lista con alertas de acción vencida, conversión a cliente | 🟠 Media |
+| **F7 — Visitas** | Formulario 7 campos, validación fecha ≤ 24h con Zod | 🟠 Media |
+| **F8 — Seguimientos** | Bandeja vencidos con badge (dato backend), botón Cerrar | 🟠 Media |
+| **F9 — Ventas** | Captura mensual, gráfica Meta vs Real vs Forecast (Recharts) | 🟡 Normal |
+| **F10 — Reportes** | Exportación CSV/JSON vía `GET /reportes/export` | 🟡 Normal |
+| **F11 — Admin** | Usuarios, catálogos, auditoría (solo ADMIN) | 🟡 Normal |
+| **F12 — Pulido** | Skeletons, toasts, responsive, dark mode | 🟢 Baja |
+
+---
+
+## 10. Convenciones del Equipo
+
+| Regla | Detalle |
+|-------|---------|
+| Componentes | `PascalCase` en `.jsx` |
+| Hooks custom | Prefijo `use` → `useOportunidades.js` |
+| API calls | **Solo desde `src/api/`** — nunca fetch directo en componentes |
+| Estilos | CSS Modules (`Componente.module.css`) |
+| Tokens JWT | **Nunca `localStorage`** — solo Zustand en memoria |
+| Validaciones | Zod + React Hook Form |
+| Cálculos | `diasVencidos`, `valorPonderado`, etc. **vienen del backend**, no se calculan en cliente |
+| Git | `feature/nombre` → PR a `develop` |
+
+---
+
+## 11. Notas Importantes de Integración
+
+> [!IMPORTANT]
+> La seguridad real está en el backend con `@PreAuthorize`. El frontend solo oculta opciones de UI. Si un usuario accede a un endpoint sin permiso recibirá `403` igual.
+
+> [!TIP]
+> Consulta Swagger en `http://localhost:8080/swagger-ui.html` para ver los DTOs exactos de request/response de cada endpoint mientras desarrollas.
+
+> [!NOTE]
+> El backend ya tiene CORS configurado para `http://localhost:5173`. Si cambias el puerto de Vite, actualiza la configuración CORS en `SecurityConfig.java` del backend.
+
+---
+
+*Versión: 1.0 | Conecta con: Backend Java 21 + Spring Boot 4 en `localhost:8080`*

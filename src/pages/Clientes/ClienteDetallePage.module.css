@@ -1,0 +1,476 @@
+/* ClienteDetallePage.module.css */
+
+/* ========== BASE ========== */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+}
+
+[data-theme='dark'] .page {
+  background: var(--color-bg);
+}
+
+/* ========== BACK ========== */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  width: fit-content;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.back:hover {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.04);
+}
+
+/* ========== CARD ========== */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* ========== CARD HEADER ========== */
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.clienteAvatarLarge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.headerBadges {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+/* ========== INFO GRID ========== */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg);
+  border-radius: 8px;
+}
+
+.infoItem dt {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.infoItem dt svg {
+  color: var(--color-text-muted);
+}
+
+.infoItem dd {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.infoItem dd a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.infoItem dd a:hover {
+  text-decoration: underline;
+}
+
+/* ========== NOTAS ========== */
+.notasSection {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.notasLabel {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.notasContent {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* ========== SECTION HEADER ========== */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sectionIcon {
+  color: #2563eb;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.addBtn,
+.sendBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+/* ========== CONTACTOS ========== */
+.contactoCell {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.contactoAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.contactoNombre {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.contactoCargo {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  display: block;
+}
+
+.contactoEmail {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.contactoEmail svg {
+  color: var(--color-text-muted);
+}
+
+.rowActions {
+  display: flex;
+  gap: 4px;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.iconBtn:hover:not(:disabled) {
+  color: #2563eb;
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.iconDanger {
+  color: #ef4444;
+}
+
+.iconDanger:hover:not(:disabled) {
+  color: #dc2626;
+  border-color: #dc2626;
+  background: rgba(239, 68, 68, 0.04);
+}
+
+/* ========== EMPTY STATES ========== */
+.emptyContactos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.emptyContactos svg {
+  color: var(--color-text-muted);
+}
+
+.emptyContactos p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.emptyMessage {
+  margin: 0;
+  padding: 1rem 0;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ========== NOTE ========== */
+.note {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  padding: 0.5rem 0.75rem;
+  background: #fffbeb;
+  border-radius: 6px;
+  border: 1px solid #fde68a;
+}
+
+/* ========== DELETE MODAL ========== */
+.deleteModalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.deleteModalContent p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.deleteModalContent p strong {
+  color: var(--color-text);
+}
+
+.deleteActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.deleteActions button {
+  flex: 1;
+}
+
+/* ========== REASIGNAR ========== */
+.reasignarForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reasignarDesc {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.reasignarDesc strong {
+  color: var(--color-text);
+}
+
+.reasignarActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.reasignarActions button {
+  flex: 1;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .actionBtn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .title {
+    font-size: 1.2rem;
+  }
+
+  .clienteAvatarLarge {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+  }
+
+  .headerLeft {
+    gap: 0.75rem;
+  }
+
+  .addBtn,
+  .sendBtn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .reasignarActions {
+    flex-direction: column;
+  }
+
+  .deleteActions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 0.75rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+    border-radius: 12px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .infoItem {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actionBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,264 @@
+/* --- Variables (puedes moverlas a tu archivo global de variables) --- */
+:root {
+  --sidebar-width: 240px; /* Un poco más ancho para mejor legibilidad */
+  --sidebar-collapsed-width: 68px;
+  --sidebar-transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Sidebar Principal --- */
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--color-surface-dark);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: var(--sidebar-transition);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15); /* Sombra sutil */
+  z-index: 100;
+  height: 100vh; /* Ocupa toda la altura de la ventana */
+  position: sticky; /* Se queda fijo al hacer scroll */
+  top: 0;
+  overflow: hidden; /* Oculta el desbordamiento para que funcione el border-radius si lo tuviera */
+}
+
+/* --- Brand / Logo --- */
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Para alinear logo a la izquierda y botón a la derecha */
+  padding: var(--spacing-md) var(--spacing-sm);
+  padding-right: var(--spacing-xs);
+  overflow: hidden;
+  flex-shrink: 0; /* Evita que se encoja */
+  min-height: 70px; /* Altura mínima para mantener consistencia */
+}
+
+.logo {
+  width: 100%;
+  height: auto;
+  max-height: 50px; /* Ajusta según tu logo */
+  object-fit: contain;
+  transition: max-height 0.3s ease;
+}
+
+/* --- Botón para Colapsar --- */
+.collapseButton {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  margin-left: auto; /* Empuja el botón a la derecha */
+}
+
+.collapseButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.collapseButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.chevronRotated {
+  transform: rotate(180deg);
+}
+
+/* --- Navegación --- */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-sm);
+  overflow-y: auto; /* Permite scroll si hay muchos items */
+  flex: 1; /* Ocupa el espacio restante */
+}
+
+.nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+/* --- Enlaces (Links) --- */
+.link {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Espacio entre icono y texto */
+  padding: 10px var(--spacing-sm);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  position: relative; /* Para futuros efectos, como un indicador de active */
+}
+
+/* Alinear iconos y textos en el centro vertical */
+.link svg {
+  flex-shrink: 0; /* Evita que el icono se encoja */
+}
+
+.link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+/* Estado activo */
+.active {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb, 0, 0, 0), 0.3); /* Sombra sutil */
+}
+
+/* Mejorar el hover en el estado activo */
+.active:hover {
+  background: var(--color-primary-dark, var(--color-primary));
+  color: #fff;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.2s;
+}
+
+/* --- MODO COLAPSADO --- */
+.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+.collapsed .brand {
+  padding: var(--spacing-md) var(--spacing-xs);
+  justify-content: center; /* Centra el logo */
+  min-height: 70px;
+}
+
+.collapsed .logo {
+  max-height: 40px;
+}
+
+.collapsed .collapseButton {
+  display: none; /* Ocultamos el botón en modo colapsado para no sobrecargar */
+}
+
+.collapsed .nav {
+  padding: var(--spacing-sm) var(--spacing-xs);
+  align-items: center;
+}
+
+.collapsed .link {
+  justify-content: center;
+  gap: 0;
+  padding: 12px 0; /* Más área de clic */
+  width: 100%;
+  border-radius: 8px;
+}
+
+.collapsed .link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.collapsed .label {
+  display: none; /* Ocultamos el texto */
+}
+
+.collapsed .active {
+  background: var(--color-primary);
+  box-shadow: 0 2px 6px rgba(var(--color-primary-rgb, 0, 0, 0), 0.25);
+}
+
+/* --- Overlay (para móviles) --- */
+.overlay {
+  display: none;
+}
+
+/* --- RESPONSIVE (Móviles) --- */
+@media (max-width: 768px) {
+  .sidebar,
+  .collapsed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 150;
+    width: var(--sidebar-width);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.25);
+    border-radius: 0; /* Quita cualquier borde redondeado en móvil */
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* En móvil, el colapso no aplica, se muestra completo */
+  .sidebar.collapsed {
+    width: var(--sidebar-width);
+  }
+
+  .sidebar.collapsed .label {
+    display: inline; /* Mostramos el texto en móvil */
+  }
+
+  .sidebar.collapsed .link {
+    justify-content: flex-start; /* Alineamos a la izquierda */
+    gap: 12px;
+    padding: 10px var(--spacing-sm);
+  }
+
+  .sidebar.collapsed .logo {
+    max-height: 50px;
+  }
+
+  .sidebar.collapsed .collapseButton {
+    display: flex; /* Mostramos el botón de colapso en móvil? No, mejor ocultarlo */
+    display: none;
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 140;
+    backdrop-filter: blur(2px); /* Efecto de desenfoque sutil */
+    animation: fadeIn 0.2s ease;
+  }
+}
+
+/* --- Animaciones --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

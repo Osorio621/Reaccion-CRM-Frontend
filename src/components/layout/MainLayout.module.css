@@ -1,0 +1,28 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.contentExpanded {
+  flex: 1;
+}
+
+.main {
+  flex: 1;
+  padding: var(--spacing-lg);
+  background: var(--color-bg);
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: var(--spacing-md);
+  }
+}

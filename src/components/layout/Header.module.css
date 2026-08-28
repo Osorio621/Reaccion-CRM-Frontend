@@ -1,0 +1,632 @@
+/* Header.module.css */
+
+/* ========== HEADER ========== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.5rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  transition: all 0.3s ease;
+  min-height: 64px;
+}
+
+[data-theme="dark"] .header {
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom-color: #1e293b;
+}
+
+/* ========== LEFT ========== */
+.left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ========== BRAND ========== */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brandLogo {
+  font-size: 1.3rem;
+}
+
+.brandName {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .brandName {
+  color: #f1f5f9;
+}
+
+.version {
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .version {
+  background: rgba(37, 99, 235, 0.15);
+  color: #60a5fa;
+}
+
+.pageTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  padding-left: 0.75rem;
+  border-left: 1px solid #e2e8f0;
+  display: none;
+}
+
+[data-theme="dark"] .pageTitle {
+  color: #94a3b8;
+  border-left-color: #1e293b;
+}
+
+@media (min-width: 768px) {
+  .pageTitle {
+    display: block;
+  }
+}
+
+/* ========== RIGHT ========== */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ========== ICON BUTTONS ========== */
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.iconBtn:hover {
+  background: rgba(15, 23, 42, 0.04);
+  color: #0f172a;
+}
+
+[data-theme="dark"] .iconBtn {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .iconBtn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #f1f5f9;
+}
+
+.themeBtn {
+  width: 36px;
+  height: 36px;
+}
+
+.themeBtn:hover {
+  background: rgba(37, 99, 235, 0.06);
+  color: #2563eb;
+}
+
+/* ========== NOTIFICATIONS ========== */
+.notificationWrapper {
+  position: relative;
+}
+
+.notificationBtn {
+  width: 36px;
+  height: 36px;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+[data-theme="dark"] .notificationBadge {
+  border-color: #0f172a;
+}
+
+.notificationDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 380px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme="dark"] .notificationDropdown {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+[data-theme="dark"] .dropdownHeader {
+  border-bottom-color: #334155;
+}
+
+.dropdownTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+[data-theme="dark"] .dropdownTitle {
+  color: #f1f5f9;
+}
+
+.dropdownAction {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #2563eb;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdownAction:hover {
+  text-decoration: underline;
+}
+
+.dropdownList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.25rem 0;
+}
+
+.notificationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.notificationItem:hover {
+  background: rgba(37, 99, 235, 0.03);
+}
+
+[data-theme="dark"] .notificationItem:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.notificationDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2563eb;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.notificationDotWarning {
+  background: #f59e0b;
+}
+
+.notificationDotSuccess {
+  background: #10b981;
+}
+
+.notificationContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.notificationText {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+[data-theme="dark"] .notificationText {
+  color: #e2e8f0;
+}
+
+.notificationTime {
+  font-size: 0.65rem;
+  color: #94a3b8;
+}
+
+.dropdownFooter {
+  padding: 0.6rem 1rem;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}
+
+[data-theme="dark"] .dropdownFooter {
+  border-top-color: #334155;
+}
+
+.dropdownFooterLink {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.dropdownFooterLink:hover {
+  text-decoration: underline;
+}
+
+/* ========== USER ========== */
+.userWrapper {
+  position: relative;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.userInfo:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+[data-theme="dark"] .userInfo:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.userAvatar {
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.userInfo:hover .userAvatar {
+  border-color: #2563eb;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.userName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+[data-theme="dark"] .userName {
+  color: #f1f5f9;
+}
+
+.userRol {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+[data-theme="dark"] .userRol {
+  color: #94a3b8;
+}
+
+.userChevron {
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+}
+
+.userInfo:hover .userChevron {
+  color: #64748b;
+}
+
+/* ========== USER DROPDOWN ========== */
+.userDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+[data-theme="dark"] .userDropdown {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.dropdownUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.dropdownAvatar {
+  border: 2px solid #e2e8f0;
+}
+
+[data-theme="dark"] .dropdownAvatar {
+  border-color: #334155;
+}
+
+.dropdownUserDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.dropdownUserName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+[data-theme="dark"] .dropdownUserName {
+  color: #f1f5f9;
+}
+
+.dropdownUserEmail {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+[data-theme="dark"] .dropdownUserEmail {
+  color: #94a3b8;
+}
+
+.dropdownUserRol {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 0.25rem 0;
+}
+
+[data-theme="dark"] .dropdownDivider {
+  background: #334155;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1rem;
+  color: #0f172a;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+[data-theme="dark"] .dropdownItem {
+  color: #e2e8f0;
+}
+
+.dropdownItem:hover {
+  background: rgba(37, 99, 235, 0.04);
+  color: #2563eb;
+}
+
+[data-theme="dark"] .dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #60a5fa;
+}
+
+.dropdownLogout {
+  color: #ef4444;
+}
+
+.dropdownLogout:hover {
+  background: rgba(239, 68, 68, 0.06);
+  color: #dc2626;
+}
+
+[data-theme="dark"] .dropdownLogout {
+  color: #f87171;
+}
+
+[data-theme="dark"] .dropdownLogout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* ========== LOGOUT MOBILE ========== */
+.logoutMobile {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.logoutMobile:hover {
+  background: rgba(239, 68, 68, 0.06);
+  color: #ef4444;
+}
+
+[data-theme="dark"] .logoutMobile {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .logoutMobile:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .header {
+    padding: 0.5rem 1rem;
+    min-height: 56px;
+  }
+
+  .brandName {
+    display: none;
+  }
+
+  .version {
+    display: none;
+  }
+
+  .userDetails {
+    display: none;
+  }
+
+  .userChevron {
+    display: none;
+  }
+
+  .userInfo {
+    padding: 0.3rem;
+  }
+
+  .logoutMobile {
+    display: flex;
+  }
+
+  .notificationDropdown {
+    width: 320px;
+    right: -40px;
+  }
+
+  .userDropdown {
+    width: 260px;
+    right: -20px;
+  }
+
+  .userName {
+    display: none;
+  }
+
+  .userRol {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.4rem 0.6rem;
+    min-height: 48px;
+  }
+
+  .brandLogo {
+    font-size: 1.1rem;
+  }
+
+  .notificationDropdown {
+    width: calc(100vw - 32px);
+    right: -60px;
+  }
+
+  .userDropdown {
+    width: calc(100vw - 32px);
+    right: -40px;
+  }
+
+  .iconBtn {
+    padding: 0.3rem;
+  }
+
+  .themeBtn,
+  .notificationBtn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .notificationBtn svg,
+  .themeBtn svg {
+    width: 16px;
+    height: 16px;
+  }
+}
