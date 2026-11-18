@@ -1,0 +1,151 @@
+// English Translations
+const en = {
+  // Sidebar navigation
+  nav: {
+    dashboard: 'Dashboard',
+    pipeline: 'Pipeline',
+    clientes: 'Clients',
+    prospectos: 'Prospects',
+    oportunidades: 'Opportunities',
+    visitas: 'Visits',
+    seguimientos: 'Follow-ups',
+    ventas: 'Sales',
+    reportes: 'Reports',
+    admin: 'Admin',
+  },
+
+  // Header
+  header: {
+    notifications: 'Notifications',
+    markAllRead: 'Mark all as read',
+    noNotifications: 'You have no new notifications',
+    viewAll: 'View all notifications',
+    userMenu: 'User menu',
+    myProfile: 'My Profile & Notifications',
+    systemAdmin: 'System Administration',
+    helpSupport: 'Help & Support',
+    logout: 'Log out',
+    toggleTheme: 'Toggle theme',
+    language: 'Language',
+    expandMenu: 'Expand menu',
+    collapseMenu: 'Collapse menu',
+  },
+
+  // Page titles
+  pages: {
+    dashboard: 'Dashboard',
+    pipeline: 'Pipeline',
+    clientes: 'Clients',
+    oportunidades: 'Opportunities',
+    reportes: 'Reports',
+    perfil: 'My Profile',
+    clienteDetalle: 'Client Detail',
+    oportunidadDetalle: 'Opportunity Detail',
+  },
+
+  // Help modal
+  help: {
+    title: '❓ Help & Support Center',
+    systemDesc: 'Commercial Management and Customer Relationship System (CRM).',
+    yourRole: '🔒 Your Current Role:',
+    roles: {
+      ejecutivo: 'Executive',
+      gerente: 'Manager / Admin',
+    },
+    rolesDesc_ejecutivo: 'Manage your clients, prospects, opportunities, visits, calls and file attachments.',
+    rolesDesc_gerente: 'Executive reassignment, consolidated reporting and catalog administration.',
+    supportTitle: '📞 Technical Support Contact',
+    supportDesc: 'If you need technical assistance or to report an issue, contact the systems team:',
+    close: 'Close',
+  },
+
+  // Client detail
+  clienteDetalle: {
+    back: 'Back to clients',
+    editClient: 'Edit client',
+    newOpportunity: 'New opportunity',
+    reassignExecutive: 'Reassign executive',
+    active: 'Active',
+    inactive: 'Inactive',
+    tabs: {
+      info: 'Information',
+      contactos: 'Contacts',
+      archivos: 'Files',
+      comunicaciones: 'Communications',
+      tickets: 'Tickets',
+    },
+    info: {
+      title: 'Client information',
+      contactData: 'Contact data',
+      fiscalData: 'Tax data',
+      commercialData: 'Commercial data',
+      notes: 'Notes',
+      email: 'Main email',
+      phone: 'Main phone',
+      website: 'Website',
+      city: 'City',
+      state: 'State / Region',
+      country: 'Country',
+      address: 'Address',
+      razonSocial: 'Legal name',
+      rfc: 'Tax ID',
+      executive: 'Assigned executive',
+      unassigned: 'Unassigned',
+      type: 'Type',
+      industry: 'Industry',
+      firstPurchase: 'First purchase',
+      createdAt: 'Created at',
+    },
+    contactos: {
+      title: 'Contacts',
+      add: 'Add contact',
+      empty: 'No contacts registered',
+      name: 'Name',
+      email: 'Email',
+      phone: 'Phone',
+    },
+    tickets: {
+      title: 'Support tickets',
+      sync: 'Sync tickets',
+      empty: 'No tickets registered for this client.',
+      disabled: 'Ticket system integration is disabled on the server.',
+      id: 'ID',
+      subject: 'Subject',
+      status: 'Status',
+      date: 'Date',
+    },
+    reassign: {
+      title: 'Reassign executive',
+      desc: 'Select the new executive for',
+      newExecutive: 'New executive',
+      selectExecutive: 'Select an executive',
+      noAccess: 'Could not list users (requires permissions). Enter the ID manually.',
+      executiveId: 'Executive user ID',
+      cancel: 'Cancel',
+      submit: 'Reassign',
+    },
+    deleteContact: {
+      title: 'Delete contact',
+      confirm: 'Delete',
+      confirm2: 'from contacts?',
+      cancel: 'Cancel',
+      delete: 'Delete',
+    },
+  },
+
+  // Common
+  common: {
+    loading: 'Loading...',
+    error: 'Error',
+    retry: 'Retry',
+    cancel: 'Cancel',
+    save: 'Save',
+    delete: 'Delete',
+    edit: 'Edit',
+    add: 'Add',
+    search: 'Search',
+    noResults: 'No results',
+  },
+};
+
+export default en;

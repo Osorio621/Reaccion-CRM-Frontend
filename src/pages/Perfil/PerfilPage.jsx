@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { getPerfil, updatePerfil, cambiarPassword } from '../../api/auth.api';
+import { getPerfil, updatePerfil, cambiarPassword, uploadFotoPerfil } from '../../api/auth.api';
 import Input from '../../components/ui/Input';
 import PasswordInput from '../../components/ui/PasswordInput';
 import Button from '../../components/ui/Button';
@@ -24,19 +24,34 @@ import {
   CheckCircle,
   AlertCircle,
   Save,
-  Key
+  Key,
+  Bell,
+  MessageSquare,
+  Smartphone,
+  Upload,
+  Camera
 } from 'lucide-react';
 import styles from './PerfilPage.module.css';
+
+const telefonoRegex = /^\+?[0-9\s\-()]{7,20}$/;
+const telefonoWhatsAppRegex = /^3[0-9]{9}$/;
 
 const perfilSchema = z.object({
   nombre: z.string().min(1, 'El nombre es obligatorio').max(120),
   apellido: z.string().min(1, 'El apellido es obligatorio').max(120),
   telefono: z
     .string()
-    .regex(/^\+?[0-9\s\-()]{7,20}$/, 'Teléfono inválido')
+    .regex(telefonoRegex, 'Teléfono inválido')
     .optional()
     .or(z.literal('')),
   fotoUrl: z.string().url('Debe ser una URL válida').optional().or(z.literal('')),
+  notif_email: z.boolean().default(true),
+  notif_whatsapp: z.boolean().default(false),
+  telefono_whatsapp: z
+    .string()
+    .regex(telefonoWhatsAppRegex, 'Formato colombiano: 3001234567 (10 dígitos, inicia con 3)')
+    .optional()
+    .or(z.literal('')),
 });
 
 const passwordSchema = z
@@ -82,16 +97,28 @@ function PerfilSection() {
     queryFn: () => getPerfil().then((r) => r.data),
   });
 
+  const [fotoUploading, setFotoUploading] = useState(false);
+  const [fotoError, setFotoError] = useState('');
+
   const {
     register,
     handleSubmit,
     reset,
     setError,
     watch,
+    setValue,
     formState: { errors, isSubmitting, isDirty },
   } = useForm({
     resolver: zodResolver(perfilSchema),
-    defaultValues: { nombre: '', apellido: '', telefono: '', fotoUrl: '' },
+    defaultValues: { 
+      nombre: '', 
+      apellido: '', 
+      telefono: '', 
+      fotoUrl: '',
+      notif_email: true,
+      notif_whatsapp: false,
+      telefono_whatsapp: '',
+    },
   });
 
   const fotoPreview = watch('fotoUrl');
@@ -104,9 +131,45 @@ function PerfilSection() {
         apellido: perfil.apellido ?? '',
         telefono: perfil.telefono ?? '',
         fotoUrl: perfil.fotoUrl ?? '',
+        notif_email: perfil.notif_email ?? true,
+        notif_whatsapp: perfil.notif_whatsapp ?? false,
+        telefono_whatsapp: perfil.telefono_whatsapp ?? '',
       });
     }
   }, [perfil, reset]);
+
+  const handleFotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validar tipo y tamaño
+    if (!file.type.startsWith('image/')) {
+      setFotoError('El archivo debe ser una imagen');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setFotoError('La imagen no debe superar 5 MB');
+      return;
+    }
+
+    setFotoError('');
+    setFotoUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('foto', file);
+      const result = await uploadFotoPerfil(formData);
+      
+      // Actualizar el campo fotoUrl con la URL devuelta
+      setValue('fotoUrl', result.fotoUrl || result.url);
+      toast.success('Foto actualizada correctamente');
+    } catch (error) {
+      setFotoError(extractErrorMessage(error));
+    } finally {
+      setFotoUploading(false);
+      e.target.value = ''; // Reset input
+    }
+  };
 
   const mutation = useMutation({ mutationFn: updatePerfil });
 
@@ -173,28 +236,36 @@ function PerfilSection() {
               icon={<Phone size={16} />}
               {...register('telefono')}
             />
-            <Input
-              label="URL de foto"
-              placeholder="https://ejemplo.com/foto.jpg"
-              error={errors.fotoUrl?.message}
-              icon={<Image size={16} />}
-              {...register('fotoUrl')}
-            />
           </div>
         </div>
 
         <div className={styles.avatarPreview}>
-          <Avatar 
-            src={fotoPreview || perfil?.fotoUrl} 
-            nombre={nombreCompleto || usuario?.nombre} 
-            size={56} 
-            className={styles.avatarImage}
-          />
+          <div className={styles.avatarUpload}>
+            <Avatar 
+              src={fotoPreview || perfil?.fotoUrl} 
+              nombre={nombreCompleto || usuario?.nombre} 
+              size={80} 
+              className={styles.avatarImage}
+            />
+            <label className={styles.avatarUploadLabel}>
+              <Upload size={20} />
+              <Camera size={16} />
+              <span>Cambiar foto</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFotoChange}
+                className={styles.avatarFileInput}
+              />
+            </label>
+            {fotoUploading && <span className={styles.uploadingText}>Subiendo...</span>}
+            {fotoError && <span className={styles.errorText}>{fotoError}</span>}
+          </div>
           <div className={styles.avatarInfo}>
             <span className={styles.avatarName}>{nombreCompleto || usuario?.nombre}</span>
             <span className={styles.avatarHint}>
               <Image size={14} />
-              Vista previa de tu foto de perfil
+              Haz clic en la foto para cambiarla
             </span>
           </div>
         </div>
@@ -207,6 +278,54 @@ function PerfilSection() {
           <span className={styles.emailNote}>
             El correo y el rol solo se modifican desde Administración
           </span>
+        </div>
+
+        {/* ===== PREFERENCIAS DE NOTIFICACIÓN ===== */}
+        <div className={styles.formSection}>
+          <div className={styles.sectionTitle}>
+            <Bell size={16} />
+            <span>Preferencias de notificación</span>
+          </div>
+          <div className={styles.notificationGrid}>
+            <label className={styles.switchLabel}>
+              <span className={styles.switchText}>
+                <Bell size={16} className={styles.switchIcon} />
+                <span>Notificaciones por correo</span>
+              </span>
+              <div className={styles.switchWrapper}>
+                <input
+                  type="checkbox"
+                  className={styles.switchInput}
+                  {...register('notif_email')}
+                />
+                <span className={styles.switchSlider} />
+              </div>
+            </label>
+            <label className={styles.switchLabel}>
+              <span className={styles.switchText}>
+                <MessageSquare size={16} className={styles.switchIcon} />
+                <span>Notificaciones por WhatsApp</span>
+              </span>
+              <div className={styles.switchWrapper}>
+                <input
+                  type="checkbox"
+                  className={styles.switchInput}
+                  {...register('notif_whatsapp')}
+                />
+                <span className={styles.switchSlider} />
+              </div>
+            </label>
+          </div>
+          <Input
+            label="Teléfono WhatsApp (formato colombiano)"
+            placeholder="3001234567"
+            error={errors.telefono_whatsapp?.message}
+            icon={<Smartphone size={16} />}
+            {...register('telefono_whatsapp')}
+          />
+          <p className={styles.whatsappNote}>
+            Formato: 10 dígitos iniciando con 3 (ej. 3001234567). Solo se usa si activas notificaciones por WhatsApp.
+          </p>
         </div>
 
         {errors.root && <ErrorMessage message={errors.root.message} />}

@@ -23,22 +23,6 @@ import {
 } from 'lucide-react';
 import styles from './DashboardPage.module.css';
 
-const DEFAULT_CUMPLIMIENTO = [
-  { ejecutivo: 'Juan Pérez', meta: 250000, real: 218500 },
-  { ejecutivo: 'Ana López', meta: 280000, real: 302800 },
-  { ejecutivo: 'Carlos Ruiz', meta: 220000, real: 165400 },
-  { ejecutivo: 'Luis García', meta: 300000, real: 276000 },
-  { ejecutivo: 'Marta Díaz', meta: 200000, real: 187300 },
-];
-
-const DEFAULT_VISITAS_SEMANALES = [
-  { ejecutivo: 'Juan Pérez', realizadas: 8, planificadas: 12, mon: 2, tue: 2, wed: 1, thu: 2, fri: 1 },
-  { ejecutivo: 'Ana López', realizadas: 5, planificadas: 10, mon: 1, tue: 1, wed: 1, thu: 1, fri: 1 },
-  { ejecutivo: 'Carlos Ruiz', realizadas: 11, planificadas: 10, mon: 3, tue: 2, wed: 2, thu: 2, fri: 2 },
-  { ejecutivo: 'Luis García', realizadas: 7, planificadas: 8, mon: 1, tue: 2, wed: 1, thu: 2, fri: 1 },
-  { ejecutivo: 'Marta Díaz', realizadas: 3, planificadas: 9, mon: 1, tue: 0, wed: 1, thu: 1, fri: 0 },
-];
-
 function formatCurrency(n) {
   return `$${Number(n).toLocaleString('es-CO')}`;
 }
@@ -86,14 +70,14 @@ export default function DashboardPage() {
   }, [oportunidadesQuery.data]);
 
   const cumplimiento = useMemo(() => {
-    const raw = resumen?.cumplimientoEjecutivos?.length
+    const raw = Array.isArray(resumen?.cumplimientoEjecutivos)
       ? resumen.cumplimientoEjecutivos
-      : DEFAULT_CUMPLIMIENTO;
+      : [];
     return computeCumplimientoData(raw);
   }, [resumen]);
 
   const visitasSemana = useMemo(
-    () => (resumen?.visitasSemanaPorEjecutivo?.length ? resumen.visitasSemanaPorEjecutivo : DEFAULT_VISITAS_SEMANALES),
+    () => (Array.isArray(resumen?.visitasSemanaPorEjecutivo) ? resumen.visitasSemanaPorEjecutivo : []),
     [resumen]
   );
 
@@ -245,53 +229,59 @@ export default function DashboardPage() {
             </div>
           </header>
 
-          <div className={styles.cumpleList}>
-            {cumplimiento.map((c, idx) => (
-              <div key={`${c.ejecutivo}-${idx}`} className={styles.cumpleRow}>
-                <div className={styles.cumpleHead}>
-                  <div className={styles.cumpleUser}>
-                    <div className={styles.cumpleAvatar} style={{ 
-                      background: `hsl(${idx * 60 + 200}, 70%, 50%)` 
-                    }}>
-                      {c.ejecutivo.split(' ').map(n => n[0]).join('')}
+          {cumplimiento.length === 0 ? (
+            <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+              <p style={{ margin: 0 }}>Sin metas ni datos de cumplimiento de ejecutivos aún.</p>
+            </div>
+          ) : (
+            <div className={styles.cumpleList}>
+              {cumplimiento.map((c, idx) => (
+                <div key={`${c.ejecutivo}-${idx}`} className={styles.cumpleRow}>
+                  <div className={styles.cumpleHead}>
+                    <div className={styles.cumpleUser}>
+                      <div className={styles.cumpleAvatar} style={{ 
+                        background: `hsl(${idx * 60 + 200}, 70%, 50%)` 
+                      }}>
+                        {c.ejecutivo.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <span className={styles.cumpleName}>{c.ejecutivo}</span>
                     </div>
-                    <span className={styles.cumpleName}>{c.ejecutivo}</span>
+                    <div className={styles.cumpleValues}>
+                      <span className={styles.cumpleValue}>
+                        {formatCurrency(c.real)}
+                        <span className={styles.cumpleMetaTag}>/ {formatCurrency(c.meta)}</span>
+                      </span>
+                      <Badge
+                        tone={c.estado === 'meta' ? 'success' : c.estado === 'progreso' ? 'info' : 'danger'}
+                        className={styles.cumpleBadge}
+                      >
+                        {c.porcentaje.toFixed(0)}%
+                      </Badge>
+                    </div>
                   </div>
-                  <div className={styles.cumpleValues}>
-                    <span className={styles.cumpleValue}>
-                      {formatCurrency(c.real)}
-                      <span className={styles.cumpleMetaTag}>/ {formatCurrency(c.meta)}</span>
-                    </span>
-                    <Badge
-                      tone={c.estado === 'meta' ? 'success' : c.estado === 'progreso' ? 'info' : 'danger'}
-                      className={styles.cumpleBadge}
-                    >
-                      {c.porcentaje.toFixed(0)}%
-                    </Badge>
-                  </div>
-                </div>
-                <div className={styles.cumpleBarBg}>
-                  <div
-                    className={`${styles.cumpleBarFill} ${
-                      c.estado === 'meta'
-                        ? styles.cumpleBarMeta
-                        : c.estado === 'progreso'
-                          ? styles.cumpleBarProgreso
-                          : styles.cumpleBarBajo
-                    }`}
-                    style={{ width: `${Math.min(100, c.porcentaje)}%` }}
-                  />
-                  {c.porcentaje >= 100 && (
-                    <span
-                      className={styles.cumpleMarker}
-                      style={{ left: '100%' }}
-                      aria-hidden
+                  <div className={styles.cumpleBarBg}>
+                    <div
+                      className={`${styles.cumpleBarFill} ${
+                        c.estado === 'meta'
+                          ? styles.cumpleBarMeta
+                          : c.estado === 'progreso'
+                            ? styles.cumpleBarProgreso
+                            : styles.cumpleBarBajo
+                      }`}
+                      style={{ width: `${Math.min(100, c.porcentaje)}%` }}
                     />
-                  )}
+                    {c.porcentaje >= 100 && (
+                      <span
+                        className={styles.cumpleMarker}
+                        style={{ left: '100%' }}
+                        aria-hidden
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </article>
 
         <article className={styles.card}>
@@ -315,66 +305,74 @@ export default function DashboardPage() {
             </div>
           </header>
 
-          <div className={styles.visitaWeekHeader}>
-            <span className={styles.visitaHeaderName}>Ejecutivo</span>
-            <div className={styles.visitaDays}>
-              <span>L</span>
-              <span>M</span>
-              <span>M</span>
-              <span>J</span>
-              <span>V</span>
+          {visitasSemana.length === 0 ? (
+            <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+              <p style={{ margin: 0 }}>Sin visitas semanales registradas por el equipo comercial.</p>
             </div>
-            <div className={styles.visitaTot}>Real / Plan</div>
-          </div>
-
-          <div className={styles.visitaList}>
-            {visitasSemana.map((v, idx) => {
-              const pct = v.planificadas > 0 ? (v.realizadas / v.planificadas) * 100 : 0;
-              return (
-                <div key={`${v.ejecutivo}-${idx}`} className={styles.visitaRow}>
-                  <span className={styles.visitaName}>{v.ejecutivo}</span>
-                  <div className={styles.visitaDaysBars}>
-                    {['mon', 'tue', 'wed', 'thu', 'fri'].map((d) => (
-                      <div key={d} className={styles.visitaDayCell}>
-                        <div
-                          className={styles.visitaDayBar}
-                          style={{
-                            height: `${Math.min(100, ((v[d] ?? 0) / Math.max(4, 1)) * 100)}%`,
-                          }}
-                        />
-                        <span className={styles.visitaDayNum}>{v[d] ?? 0}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.visitaTotWrap}>
-                    <div className={styles.visitaPill}>
-                      <span
-                        className={`${styles.visitaReal} ${
-                          pct >= 80 ? styles.visitaOk : pct >= 50 ? styles.visitaMed : styles.visitaLow
-                        }`}
-                      >
-                        {v.realizadas}
-                      </span>
-                      <span className={styles.visitaSep}>/</span>
-                      <span className={styles.visitaPlan}>{v.planificadas}</span>
-                    </div>
-                    <div className={styles.visitaMiniBarBg}>
-                      <div
-                        className={`${styles.visitaMiniBarFill} ${
-                          pct >= 80
-                            ? styles.visitaBarOk
-                            : pct >= 50
-                              ? styles.visitaBarMed
-                              : styles.visitaBarLow
-                        }`}
-                        style={{ width: `${Math.min(100, pct)}%` }}
-                      />
-                    </div>
-                  </div>
+          ) : (
+            <>
+              <div className={styles.visitaWeekHeader}>
+                <span className={styles.visitaHeaderName}>Ejecutivo</span>
+                <div className={styles.visitaDays}>
+                  <span>L</span>
+                  <span>M</span>
+                  <span>M</span>
+                  <span>J</span>
+                  <span>V</span>
                 </div>
-              );
-            })}
-          </div>
+                <div className={styles.visitaTot}>Real / Plan</div>
+              </div>
+
+              <div className={styles.visitaList}>
+                {visitasSemana.map((v, idx) => {
+                  const pct = v.planificadas > 0 ? (v.realizadas / v.planificadas) * 100 : 0;
+                  return (
+                    <div key={`${v.ejecutivo}-${idx}`} className={styles.visitaRow}>
+                      <span className={styles.visitaName}>{v.ejecutivo}</span>
+                      <div className={styles.visitaDaysBars}>
+                        {['mon', 'tue', 'wed', 'thu', 'fri'].map((d) => (
+                          <div key={d} className={styles.visitaDayCell}>
+                            <div
+                              className={styles.visitaDayBar}
+                              style={{
+                                height: `${Math.min(100, ((v[d] ?? 0) / Math.max(4, 1)) * 100)}%`,
+                              }}
+                            />
+                            <span className={styles.visitaDayNum}>{v[d] ?? 0}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className={styles.visitaTotWrap}>
+                        <div className={styles.visitaPill}>
+                          <span
+                            className={`${styles.visitaReal} ${
+                              pct >= 80 ? styles.visitaOk : pct >= 50 ? styles.visitaMed : styles.visitaLow
+                            }`}
+                          >
+                            {v.realizadas}
+                          </span>
+                          <span className={styles.visitaSep}>/</span>
+                          <span className={styles.visitaPlan}>{v.planificadas}</span>
+                        </div>
+                        <div className={styles.visitaMiniBarBg}>
+                          <div
+                            className={`${styles.visitaMiniBarFill} ${
+                              pct >= 80
+                                ? styles.visitaBarOk
+                                : pct >= 50
+                                  ? styles.visitaBarMed
+                                  : styles.visitaBarLow
+                            }`}
+                            style={{ width: `${Math.min(100, pct)}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </article>
       </section>
 

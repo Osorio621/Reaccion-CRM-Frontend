@@ -1,0 +1,151 @@
+// Traducciones en Español
+const es = {
+  // Navegación sidebar
+  nav: {
+    dashboard: 'Dashboard',
+    pipeline: 'Pipeline',
+    clientes: 'Clientes',
+    prospectos: 'Prospectos',
+    oportunidades: 'Oportunidades',
+    visitas: 'Visitas',
+    seguimientos: 'Seguimientos',
+    ventas: 'Ventas',
+    reportes: 'Reportes',
+    admin: 'Admin',
+  },
+
+  // Header
+  header: {
+    notifications: 'Notificaciones',
+    markAllRead: 'Marcar todas como leídas',
+    noNotifications: 'No tienes nuevas notificaciones',
+    viewAll: 'Ver todas las notificaciones',
+    userMenu: 'Menú de usuario',
+    myProfile: 'Mi Perfil y Notificaciones',
+    systemAdmin: 'Administración del sistema',
+    helpSupport: 'Ayuda y Soporte',
+    logout: 'Cerrar sesión',
+    toggleTheme: 'Cambiar tema',
+    language: 'Idioma',
+    expandMenu: 'Expandir menú',
+    collapseMenu: 'Colapsar menú',
+  },
+
+  // Títulos de páginas
+  pages: {
+    dashboard: 'Dashboard',
+    pipeline: 'Pipeline',
+    clientes: 'Clientes',
+    oportunidades: 'Oportunidades',
+    reportes: 'Reportes',
+    perfil: 'Mi Perfil',
+    clienteDetalle: 'Detalle Cliente',
+    oportunidadDetalle: 'Detalle Oportunidad',
+  },
+
+  // Modal de ayuda
+  help: {
+    title: '❓ Centro de Ayuda y Soporte',
+    systemDesc: 'Sistema de Gestión Comercial y Relación con Clientes (CRM).',
+    yourRole: '🔒 Tu Rol Actual:',
+    roles: {
+      ejecutivo: 'Ejecutivo',
+      gerente: 'Gerente / Admin',
+    },
+    rolesDesc_ejecutivo: 'Gestión de tus clientes, prospectos, oportunidades, visitas, llamadas y archivos adjuntos.',
+    rolesDesc_gerente: 'Reasignación de ejecutivos, reporte consolidado y administración de catálogos.',
+    supportTitle: '📞 Contacto de Soporte Técnico',
+    supportDesc: 'Si requieres asistencia técnica o reportar una falla, contacta al equipo de sistemas:',
+    close: 'Cerrar',
+  },
+
+  // Cliente detalle
+  clienteDetalle: {
+    back: 'Volver a clientes',
+    editClient: 'Editar cliente',
+    newOpportunity: 'Nueva oportunidad',
+    reassignExecutive: 'Reasignar ejecutivo',
+    active: 'Activo',
+    inactive: 'Inactivo',
+    tabs: {
+      info: 'Información',
+      contactos: 'Contactos',
+      archivos: 'Archivos',
+      comunicaciones: 'Comunicaciones',
+      tickets: 'Tickets',
+    },
+    info: {
+      title: 'Información del cliente',
+      contactData: 'Datos de contacto',
+      fiscalData: 'Datos fiscales',
+      commercialData: 'Datos comerciales',
+      notes: 'Notas',
+      email: 'Correo principal',
+      phone: 'Teléfono principal',
+      website: 'Sitio web',
+      city: 'Ciudad',
+      state: 'Estado / Región',
+      country: 'País',
+      address: 'Dirección',
+      razonSocial: 'Razón social',
+      rfc: 'RFC',
+      executive: 'Ejecutivo asignado',
+      unassigned: 'Sin asignar',
+      type: 'Tipo',
+      industry: 'Industria',
+      firstPurchase: 'Primera compra',
+      createdAt: 'Fecha de creación',
+    },
+    contactos: {
+      title: 'Contactos',
+      add: 'Agregar contacto',
+      empty: 'Sin contactos registrados',
+      name: 'Nombre',
+      email: 'Email',
+      phone: 'Teléfono',
+    },
+    tickets: {
+      title: 'Tickets de soporte',
+      sync: 'Sincronizar tickets',
+      empty: 'Sin tickets registrados para este cliente.',
+      disabled: 'La integración con el sistema de tickets está deshabilitada en el servidor.',
+      id: 'ID',
+      subject: 'Asunto',
+      status: 'Estado',
+      date: 'Fecha',
+    },
+    reassign: {
+      title: 'Reasignar ejecutivo',
+      desc: 'Selecciona el nuevo ejecutivo para',
+      newExecutive: 'Nuevo ejecutivo',
+      selectExecutive: 'Selecciona un ejecutivo',
+      noAccess: 'No se pudo listar los usuarios (requiere permisos). Ingresa el ID manualmente.',
+      executiveId: 'ID del usuario ejecutivo',
+      cancel: 'Cancelar',
+      submit: 'Reasignar',
+    },
+    deleteContact: {
+      title: 'Eliminar contacto',
+      confirm: '¿Eliminar a',
+      confirm2: 'de los contactos?',
+      cancel: 'Cancelar',
+      delete: 'Eliminar',
+    },
+  },
+
+  // Común
+  common: {
+    loading: 'Cargando...',
+    error: 'Error',
+    retry: 'Reintentar',
+    cancel: 'Cancelar',
+    save: 'Guardar',
+    delete: 'Eliminar',
+    edit: 'Editar',
+    add: 'Agregar',
+    search: 'Buscar',
+    noResults: 'Sin resultados',
+  },
+};
+
+export default es;

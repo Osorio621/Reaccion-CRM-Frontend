@@ -513,3 +513,21 @@
 .secondaryLink:hover {
   color: #3b82f6;
 }
+
+/* ========== SOLICITUD DE CUENTA ========== */
+.solicitudForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.solicitudActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.solicitudActions button {
+  min-width: 120px;
+}

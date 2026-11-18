@@ -11,7 +11,11 @@ export function useCatalogos(params) {
 export function useCatalogosPorTipo(tipo, enabled = true) {
   return useQuery({
     queryKey: ['catalogos', { tipo }],
-    queryFn: () => api.getCatalogos({ tipo }).then((r) => r.data),
+    queryFn: () =>
+      api.getCatalogos({ tipo }).then((r) => {
+        const d = r.data;
+        return Array.isArray(d) ? d : d?.contenido ?? (Array.isArray(d?.data) ? d.data : []);
+      }),
     enabled: enabled && !!tipo,
     staleTime: 5 * 60 * 1000,
   });

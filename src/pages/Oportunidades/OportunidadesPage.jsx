@@ -8,7 +8,8 @@ import {
   User,
   DollarSign,
   Target,
-  Clock
+  Clock,
+  Eye
 } from 'lucide-react';
 import {
   useOportunidades,
@@ -25,11 +26,13 @@ import { extractErrorMessage } from '../../utils/errorHandler';
 import { toast } from '../../store/toastStore';
 import CerrarOportunidadModal from './CerrarOportunidadModal';
 import OportunidadFormModal from './OportunidadFormModal';
+import OportunidadDetalleModal from './OportunidadDetalleModal';
 import styles from './Oportunidades.module.css';
 
 export default function OportunidadesPage() {
   const [aCerrar, setACerrar] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [detalleOportunidad, setDetalleOportunidad] = useState(null);
   const { data, isLoading, isError, error, refetch } = useOportunidades();
   const cerrar = useCerrarOportunidad();
 
@@ -227,23 +230,42 @@ export default function OportunidadesPage() {
                   ),
               },
               {
-                key: 'acciones',
-                header: '',
-                className: styles.actionsColumn,
-                render: (row) =>
-                  !row.estado || row.estado === 'ACTIVA' || row.estado === 'ABIERTA' ? (
-                    <div className={styles.rowActions}>
-                      <button
-                        type="button"
-                        className={`${styles.iconBtn} ${styles.iconBtnSuccess}`}
-                        onClick={() => setACerrar(row)}
-                        title="Cerrar oportunidad"
-                      >
-                        <Lock size={14} />
-                      </button>
-                    </div>
-                  ) : null,
-              },
+                  key: 'acciones',
+                  header: '',
+                  className: styles.actionsColumn,
+                  render: (row) =>
+                    !row.estado || row.estado === 'ACTIVA' || row.estado === 'ABIERTA' ? (
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className={styles.iconBtn}
+                          onClick={() => setDetalleOportunidad(row)}
+                          title="Ver detalle"
+                        >
+                          <Eye size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.iconBtn} ${styles.iconBtnSuccess}`}
+                          onClick={() => setACerrar(row)}
+                          title="Cerrar oportunidad"
+                        >
+                          <Lock size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className={styles.iconBtn}
+                          onClick={() => setDetalleOportunidad(row)}
+                          title="Ver detalle"
+                        >
+                          <Eye size={14} />
+                        </button>
+                      </div>
+                    ),
+                },
             ]}
             data={oportunidades}
             emptyMessage={
@@ -267,6 +289,12 @@ export default function OportunidadesPage() {
         oportunidad={aCerrar}
         onClose={() => setACerrar(null)}
         onConfirm={confirmarCierre}
+      />
+
+      <OportunidadDetalleModal
+        open={!!detalleOportunidad}
+        oportunidad={detalleOportunidad}
+        onClose={() => setDetalleOportunidad(null)}
       />
     </div>
   );

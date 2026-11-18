@@ -135,17 +135,70 @@
 .avatarPreview {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
+  gap: 1.5rem;
+  padding: 1rem;
   background: var(--color-bg);
   border-radius: 12px;
   border: 1px solid var(--color-border);
   margin-top: 0.5rem;
 }
 
+.avatarUpload {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatarUploadLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.avatarUploadLabel:hover {
+  background: var(--color-surface);
+}
+
+.avatarUploadLabel svg {
+  color: var(--color-primary);
+}
+
+.avatarUploadLabel span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.avatarFileInput {
+  display: none;
+}
+
 .avatarImage {
   border: 3px solid var(--color-surface);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.avatarUploadLabel:hover .avatarImage {
+  transform: scale(1.02);
+}
+
+.uploadingText {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.errorText {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--color-danger);
+  font-weight: 500;
 }
 
 .avatarInfo {
@@ -190,6 +243,108 @@
   color: var(--color-text-muted);
   font-size: 0.75rem;
   margin-left: 0.5rem;
+}
+
+/* ========== NOTIFICATION PREFERENCES ========== */
+.formSection {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.notificationGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.switchLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.switchLabel:hover {
+  border-color: var(--color-primary);
+}
+
+.switchText {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.switchIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.switchWrapper {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switchInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switchSlider {
+  position: absolute;
+  inset: 0;
+  background: var(--color-border);
+  border-radius: 24px;
+  transition: all 0.2s ease;
+}
+
+.switchSlider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.switchInput:checked + .switchSlider {
+  background: var(--color-primary);
+}
+
+.switchInput:checked + .switchSlider::before {
+  transform: translateX(20px);
+}
+
+.whatsappNote {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  padding: 0.5rem 0;
 }
 
 /* ========== PASSWORD STRENGTH ========== */
@@ -364,6 +519,10 @@
   }
 
   .requirementsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .notificationGrid {
     grid-template-columns: 1fr;
   }
 

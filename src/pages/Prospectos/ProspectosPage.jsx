@@ -14,7 +14,8 @@ import {
   AlertCircle,
   Building2,
   Calendar,
-  Target
+  Target,
+  Eye
 } from 'lucide-react';
 import {
   useProspectos,
@@ -34,6 +35,7 @@ import ErrorMessage from '../../components/ui/ErrorMessage';
 import { extractErrorMessage } from '../../utils/errorHandler';
 import { toast } from '../../store/toastStore';
 import ProspectoFormModal from './ProspectoFormModal';
+import ProspectoDetalleModal from './ProspectoDetalleModal';
 import styles from './ProspectosPage.module.css';
 
 function formatearFecha(fecha) {
@@ -53,6 +55,7 @@ export default function ProspectosPage() {
   const [editando, setEditando] = useState(null);
   const [aConvertir, setAConvertir] = useState(null);
   const [aEliminar, setAEliminar] = useState(null);
+  const [detalleProspecto, setDetalleProspecto] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterEstado, setFilterEstado] = useState('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -345,48 +348,56 @@ export default function ProspectosPage() {
                   );
                 },
               },
-              {
-                key: 'acciones',
-                header: '',
-                render: (row) => (
-                  <div className={styles.actions}>
-                    {!row.convertido && (
-                      <>
-                        <button
-                          type="button"
-                          title="Editar prospecto"
-                          className={styles.iconBtn}
-                          onClick={() => abrirEdicion(row)}
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          title="Convertir a cliente"
-                          className={`${styles.iconBtn} ${styles.iconSuccess}`}
-                          onClick={() => setAConvertir(row)}
-                        >
-                          <ArrowRightCircle size={16} />
-                        </button>
-                        {puedeEliminar && (
-                          <button
-                            type="button"
-                            title="Eliminar prospecto"
-                            className={`${styles.iconBtn} ${styles.iconDanger}`}
-                            disabled={deleteProspecto.isPending}
-                            onClick={() => setAEliminar(row)}
-                          >
-                            <Trash2 size={16} />
-                          </button>
+{
+                    key: 'acciones',
+                    header: '',
+                    render: (row) => (
+                      <div className={styles.actions}>
+                        {!row.convertido && (
+                          <>
+                            <button
+                              type="button"
+                              title="Ver detalle"
+                              className={styles.iconBtn}
+                              onClick={() => setDetalleProspecto(row)}
+                            >
+                              <Eye size={16} />
+                            </button>
+                            <button
+                              type="button"
+                              title="Editar prospecto"
+                              className={styles.iconBtn}
+                              onClick={() => abrirEdicion(row)}
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            <button
+                              type="button"
+                              title="Convertir a cliente"
+                              className={`${styles.iconBtn} ${styles.iconSuccess}`}
+                              onClick={() => setAConvertir(row)}
+                            >
+                              <ArrowRightCircle size={16} />
+                            </button>
+                            {puedeEliminar && (
+                              <button
+                                type="button"
+                                title="Eliminar prospecto"
+                                className={`${styles.iconBtn} ${styles.iconDanger}`}
+                                disabled={deleteProspecto.isPending}
+                                onClick={() => setAEliminar(row)}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </>
                         )}
-                      </>
-                    )}
-                    {row.convertido && (
-                      <span className={styles.convertidoLabel}>✅ Convertido</span>
-                    )}
-                  </div>
-                ),
-              },
+                        {row.convertido && (
+                          <span className={styles.convertidoLabel}>✅ Convertido</span>
+                        )}
+                      </div>
+                    ),
+                  },
             ]}
             data={filteredProspectos}
             emptyMessage={
@@ -516,6 +527,12 @@ export default function ProspectosPage() {
           </div>
         </div>
       </Modal>
+
+      <ProspectoDetalleModal
+        open={!!detalleProspecto}
+        prospecto={detalleProspecto}
+        onClose={() => setDetalleProspecto(null)}
+      />
     </div>
   );
 }

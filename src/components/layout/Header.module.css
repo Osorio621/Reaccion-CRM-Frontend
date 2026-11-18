@@ -630,3 +630,103 @@
     height: 16px;
   }
 }
+
+/* ========== LANGUAGE SELECTOR ========== */
+.langWrapper {
+  position: relative;
+}
+
+.langBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.langCode {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted, #64748b);
+  line-height: 1;
+}
+
+[data-theme='dark'] .langCode {
+  color: #94a3b8;
+}
+
+.langDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 180px;
+  background: var(--color-surface, white);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  z-index: 200;
+  animation: dropdownIn 0.15s ease;
+}
+
+[data-theme='dark'] .langDropdown {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.langOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--color-text, #0f172a);
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+.langOption:hover {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+[data-theme='dark'] .langOption {
+  color: #e2e8f0;
+}
+
+[data-theme='dark'] .langOption:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.langOptionActive {
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .langOptionActive {
+  background: rgba(96, 165, 250, 0.12);
+  color: #60a5fa;
+}
+
+.langFlag {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.langLabel {
+  flex: 1;
+}
+
+.langCheck {
+  font-size: 0.75rem;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+[data-theme='dark'] .langCheck {
+  color: #60a5fa;
+}

@@ -12,24 +12,31 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
+import { useLogoStore } from '../../store/logoStore';
+import { useT } from '../../i18n/useT';
 import styles from './Sidebar.module.css';
-
-const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/pipeline', label: 'Pipeline', icon: Kanban },
-  { to: '/clientes', label: 'Clientes', icon: Users },
-  { to: '/prospectos', label: 'Prospectos', icon: UserPlus },
-  { to: '/oportunidades', label: 'Oportunidades', icon: Target },
-  { to: '/visitas', label: 'Visitas', icon: CalendarDays },
-  { to: '/seguimientos', label: 'Seguimientos', icon: BellRing },
-  { to: '/ventas', label: 'Ventas', icon: Receipt },
-  { to: '/reportes', label: 'Reportes', icon: FileBarChart2 },
-];
-
-const ADMIN_ITEMS = [{ to: '/admin', label: 'Admin', icon: ShieldCheck }];
 
 export default function Sidebar({ open = false, collapsed = false, onClose }) {
   const rol = useAuthStore((s) => s.rol);
+  const { t } = useT();
+  const { sidebarLogoUrl: logoUrl, logoAlt, logoWidth, logoHeight, logoMaxWidth } = useLogoStore();
+
+  const NAV_ITEMS = [
+    { to: '/dashboard',    labelKey: 'nav.dashboard',    icon: LayoutDashboard },
+    { to: '/pipeline',     labelKey: 'nav.pipeline',     icon: Kanban },
+    { to: '/clientes',     labelKey: 'nav.clientes',     icon: Users },
+    { to: '/prospectos',   labelKey: 'nav.prospectos',   icon: UserPlus },
+    { to: '/oportunidades',labelKey: 'nav.oportunidades',icon: Target },
+    { to: '/visitas',      labelKey: 'nav.visitas',      icon: CalendarDays },
+    { to: '/seguimientos', labelKey: 'nav.seguimientos', icon: BellRing },
+    { to: '/ventas',       labelKey: 'nav.ventas',       icon: Receipt },
+    { to: '/reportes',     labelKey: 'nav.reportes',     icon: FileBarChart2 },
+  ];
+
+  const ADMIN_ITEMS = [
+    { to: '/admin', labelKey: 'nav.admin', icon: ShieldCheck },
+  ];
+
   const links = rol === 'ADMIN' ? [...NAV_ITEMS, ...ADMIN_ITEMS] : NAV_ITEMS;
 
   const handleLinkClick = () => {
@@ -48,26 +55,37 @@ export default function Sidebar({ open = false, collapsed = false, onClose }) {
       >
         <div className={styles.brand}>
           <img
-            src="/logo-reaccion-crm.png"
-            alt="Reactivos del Valle"
+            src={logoUrl}
+            alt={logoAlt}
             className={styles.logo}
+            style={{
+              width: logoWidth,
+              height: logoHeight,
+              maxWidth: logoMaxWidth,
+            }}
+            onError={(e) => {
+              e.currentTarget.src = '/logo-reaccion-crm.png';
+            }}
           />
         </div>
         <nav className={styles.nav}>
-          {links.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              title={collapsed ? label : undefined}
-              className={({ isActive }) =>
-                isActive ? `${styles.link} ${styles.active}` : styles.link
-              }
-              onClick={handleLinkClick}
-            >
-              <Icon size={18} />
-              <span className={styles.label}>{label}</span>
-            </NavLink>
-          ))}
+          {links.map(({ to, labelKey, icon: Icon }) => {
+            const label = t(labelKey);
+            return (
+              <NavLink
+                key={to}
+                to={to}
+                title={collapsed ? label : undefined}
+                className={({ isActive }) =>
+                  isActive ? `${styles.link} ${styles.active}` : styles.link
+                }
+                onClick={handleLinkClick}
+              >
+                <Icon size={18} />
+                <span className={styles.label}>{label}</span>
+              </NavLink>
+            );
+          })}
         </nav>
       </aside>
     </>

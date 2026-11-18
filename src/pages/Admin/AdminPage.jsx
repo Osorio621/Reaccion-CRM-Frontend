@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo, useRef } from 'react';
 import {
   Pencil,
   Plus,
@@ -17,6 +17,13 @@ import {
   Hash,
   Layers,
   X,
+  Image,
+  Upload,
+  Settings,
+  SlidersHorizontal,
+  Save,
+  Eye,
+  ChevronDown,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getAuditoria } from '../../api/auditoria.api';
@@ -31,14 +38,17 @@ import {
   useUpdateCatalogo,
   useDeleteCatalogo,
 } from '../../hooks/useCatalogos';
+import { useLogoConfig, useUpdateLogoConfig, useUploadLogo } from '../../hooks/useConfig';
 import Table from '../../components/ui/Table';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Spinner from '../../components/ui/Spinner';
 import Modal from '../../components/ui/Modal';
+import Input from '../../components/ui/Input';
 import ErrorMessage from '../../components/ui/ErrorMessage';
 import { extractErrorMessage } from '../../utils/errorHandler';
 import { toast } from '../../store/toastStore';
+import { useLogoStore } from '../../store/logoStore';
 import UsuarioFormModal from './UsuarioFormModal';
 import CatalogoFormModal from './CatalogoFormModal';
 import styles from './AdminPage.module.css';
@@ -47,6 +57,7 @@ const TABS = [
   { id: 'usuarios', label: 'Usuarios', icon: UserPlus },
   { id: 'catalogos', label: 'Catálogos', icon: BookOpen },
   { id: 'auditoria', label: 'Auditoría', icon: Clock },
+  { id: 'config', label: 'Configuración', icon: Settings },
 ];
 
 const ACCION_COLORS = {
@@ -149,13 +160,10 @@ function etiquetaCampo(campo) {
   return FIELDS_LABELS[clave] || FIELDS_LABELS[campo] || String(campo);
 }
 
-// Genera una descripción humana de lo que hizo el usuario
 function descripcionAccion(row) {
-  // 1. Si el backend ya manda descripción/mensaje, úsalo directo
   if (row.descripcion) return row.descripcion;
   if (row.mensaje && typeof row.mensaje === 'string') return row.mensaje;
 
-  // 2. El backend manda campoModificado + valorAnterior/valorNuevo
   if (row.campoModificado) {
     const campo = etiquetaCampo(row.campoModificado);
     if (row.valorAnterior !== undefined && row.valorNuevo !== undefined) {
@@ -167,15 +175,12 @@ function descripcionAccion(row) {
   const detalle = row.detalle;
   if (!detalle) return '';
 
-  // 3. Detalle como string
   if (typeof detalle === 'string') return detalle;
 
-  // 4. Detalle con claves de viejo/nuevo
   const partes = [];
   const hayClavesDirectas = Object.keys(detalle).length > 0;
 
   if (hayClavesDirectas) {
-    // Buscar estructura {campo: {antes, despues}} o {campo: {old, new}}
     const entradas = Object.entries(detalle);
     const cambios = [];
 
@@ -198,8 +203,8 @@ function descripcionAccion(row) {
         row.accion === 'CREATE' || row.accion === 'INSERT'
           ? 'Se creó con los datos: '
           : row.accion === 'DELETE' || row.accion === 'DELETE_LOGICO'
-          ? 'Se eliminó el registro. Datos: '
-          : 'Cambios: ';
+            ? 'Se eliminó el registro. Datos: '
+            : 'Cambios: ';
       partes.push(`${prefijo}${cambios.join('. ')}`);
     }
   }
@@ -221,6 +226,9 @@ export default function AdminPage() {
   const [filtroTipoCatalogo, setFiltroTipoCatalogo] = useState('all');
   const [expandedAuditId, setExpandedAuditId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [dimensions, setDimensions] = useState({});
+  const logoFileInputRef = useRef(null);
 
   const {
     data: usuarios,
@@ -240,6 +248,10 @@ export default function AdminPage() {
     queryKey: ['auditoria'],
     queryFn: () => getAuditoria().then((r) => r.data),
   });
+
+  const { data: logoConfig, isLoading: loadingLogoConfig, refetch: refetchLogoConfig } = useLogoConfig();
+  const updateLogoConfigMutation = useUpdateLogoConfig();
+  const uploadLogoMutation = useUploadLogo();
 
   const createUsuario = useCreateUsuario();
   const updateUsuario = useUpdateUsuario();
@@ -308,18 +320,58 @@ export default function AdminPage() {
   const handleRefresh = () => {
     if (tab === 'usuarios') refetchUsuarios();
     else if (tab === 'catalogos') refetchCatalogos();
-    else refetchAuditoria();
+    else if (tab === 'auditoria') refetchAuditoria();
+    else refetchLogoConfig();
   };
 
-  const handleDeleteCatalogo = () => {
-    if (!deleteConfirm) return;
-    deleteCatalogo.mutate(deleteConfirm.id, {
-      onSuccess: () => {
-        toast.success('Catálogo eliminado');
-        setDeleteConfirm(null);
-      },
-      onError: (error) => toast.error(extractErrorMessage(error)),
-    });
+  const handleLogoFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('El archivo debe ser una imagen');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('La imagen no debe superar 5 MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => setLogoPreview(event.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  const handleSaveConfig = async () => {
+    try {
+      let loginLogoUrl = logoConfig?.loginLogoUrl;
+      let sidebarLogoUrl = logoConfig?.sidebarLogoUrl;
+      
+      if (logoPreview) {
+        const file = logoFileInputRef.current?.files?.[0];
+        if (file) {
+          const formData = new FormData();
+          formData.append('logo', file);
+          const result = await uploadLogoMutation.mutateAsync(formData);
+          // Backend responde: { "logoUrl": "/api/config/logo", "url": "/api/config/logo" }
+          const uploadedUrl = result.logoUrl || result.url || '/api/config/logo';
+          loginLogoUrl = uploadedUrl;
+          sidebarLogoUrl = uploadedUrl;
+        }
+      }
+
+      // PUT body: { "url": "https://..." }
+      await updateLogoConfigMutation.mutateAsync({ url: loginLogoUrl });
+      
+      // Actualizar store local inmediatamente
+      useLogoStore.getState().setLoginLogoUrl(loginLogoUrl);
+      useLogoStore.getState().setSidebarLogoUrl(sidebarLogoUrl);
+      
+      toast.success('Configuración guardada correctamente');
+      setDimensions({});
+      setLogoPreview(null);
+      refetchLogoConfig();
+    } catch (error) {
+      toast.error(extractErrorMessage(error));
+    }
   };
 
   return (
@@ -414,7 +466,9 @@ export default function AdminPage() {
                 ? usuariosList.length
                 : id === 'catalogos'
                   ? catalogosList.length
-                  : auditoriaList.length;
+                  : id === 'auditoria'
+                    ? auditoriaList.length
+                    : 0;
             return (
               <button
                 key={id}
@@ -451,7 +505,7 @@ export default function AdminPage() {
                 className={styles.clearSearch}
                 onClick={() => setSearchTerm('')}
               >
-                <X size={14} />
+                ✕
               </button>
             )}
           </div>
@@ -486,31 +540,32 @@ export default function AdminPage() {
                   </option>
                 ))}
               </select>
+              <ChevronDown size={14} className={styles.filterChevron} />
             </div>
           )}
-        </div>
-      )}
 
-      {tab === 'auditoria' && (
-        <div className={styles.toolbar}>
-          <div className={styles.auditFilters}>
-            {AUDITORIA_FILTROS.map((f) => {
-              const count =
-                f.value === 'all'
-                  ? auditoriaList.length
-                  : auditoriaList.filter((a) => a.accion === f.value).length;
-              return (
-                <button
-                  key={f.value}
-                  className={`${styles.auditFilterBtn} ${filtroAccion === f.value ? styles.auditFilterActive : ''}`}
-                  onClick={() => setFiltroAccion(f.value)}
-                >
-                  {f.label}
-                  <span className={styles.auditFilterCount}>{count}</span>
-                </button>
-              );
-            })}
-          </div>
+          {tab === 'auditoria' && (
+            <div className={styles.toolbar}>
+              <div className={styles.auditFilters}>
+                {AUDITORIA_FILTROS.map((f) => {
+                  const count =
+                    f.value === 'all'
+                      ? auditoriaList.length
+                      : auditoriaList.filter((a) => a.accion === f.value).length;
+                  return (
+                    <button
+                      key={f.value}
+                      className={`${styles.auditFilterBtn} ${filtroAccion === f.value ? styles.auditFilterActive : ''}`}
+                      onClick={() => setFiltroAccion(f.value)}
+                    >
+                      {f.label}
+                      <span className={styles.auditFilterCount}>{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -532,7 +587,7 @@ export default function AdminPage() {
                     {filteredUsuarios.length !== 1 ? 'es' : ''}
                     {filterActive !== 'all' &&
                       ` · ${filterActive === 'active' ? 'activos' : 'inactivos'}`}
-                    {searchTerm && ` · "${searchTerm}"`}
+                    {searchTerm && ` · buscando "${searchTerm}"`}
                   </span>
                 </div>
                 <Table
@@ -822,6 +877,153 @@ export default function AdminPage() {
             )}
           </>
         )}
+
+        {/* CONFIG */}
+        {tab === 'config' && (
+          <div className={styles.configSection}>
+            <div className={styles.configCard}>
+              <div className={styles.configHeader}>
+                <SlidersHorizontal size={24} className={styles.configIcon} />
+                <div>
+                  <h2 className={styles.configTitle}>Configuración de Logo</h2>
+                  <p className={styles.configSubtitle}>Personaliza el logo que aparece en la pantalla de login y la aplicación</p>
+                </div>
+              </div>
+
+              {loadingLogoConfig ? (
+                <div className={styles.loadingContainer}>
+                  <Spinner size={32} />
+                  <p>Cargando configuración...</p>
+                </div>
+              ) : (
+                <div className={styles.configForm}>
+                  {/* Logo Preview */}
+                  <div className={styles.previewSection}>
+                    <h3 className={styles.sectionTitle}>
+                      <Eye size={18} />
+                      Vista previa
+                    </h3>
+                    <div className={styles.previewContainer}>
+                      <img
+                        src={logoConfig?.logoUrl || '/logo-reaccion-crm.png'}
+                        alt={logoConfig?.logoAlt || 'Logo'}
+                        className={styles.previewImage}
+                        style={{
+                          width: logoConfig?.logoWidth || 100,
+                          height: logoConfig?.logoHeight || 'auto',
+                          maxWidth: logoConfig?.logoMaxWidth || '100%',
+                          maxHeight: logoConfig?.logoMaxHeight || 100,
+                        }}
+                      />
+                      <div className={styles.previewInfo}>
+                        <span>Actual: {logoConfig?.logoWidth || 100}px × {logoConfig?.logoHeight === 'auto' ? 'auto' : logoConfig?.logoHeight + 'px'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Upload Logo */}
+                  <div className={styles.formRow}>
+                    <div className={styles.uploadSection}>
+                      <h3 className={styles.sectionTitle}>
+                        <Image size={18} />
+                        Subir nuevo logo
+                      </h3>
+                      <div className={styles.uploadArea}>
+                        <label className={styles.uploadLabel}>
+                          <Upload size={32} />
+                          <span>Arrastra o haz clic para seleccionar</span>
+                          <span className={styles.uploadHint}>PNG, JPG, SVG (máx. 5 MB)</span>
+                          <input
+                            ref={logoFileInputRef}
+                            id="logo-file-input"
+                            type="file"
+                            accept="image/png,image/jpeg,image/svg+xml"
+                            onChange={handleLogoFileSelect}
+                            className={styles.fileInput}
+                            disabled={uploadLogoMutation.isPending}
+                          />
+                        </label>
+                        {logoPreview && (
+                          <div className={styles.previewSmall}>
+                            <img src={logoPreview} alt="Preview" />
+                            <button
+                              type="button"
+                              className={styles.removeBtn}
+                              onClick={() => setLogoPreview(null)}
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className={styles.dimensionsSection}>
+                      <h3 className={styles.sectionTitle}>
+                        <SlidersHorizontal size={18} />
+                        Dimensiones
+                      </h3>
+                      <div className={styles.dimensionsGrid}>
+                        <Input
+                          label="Ancho (px)"
+                          type="number"
+                          min="20"
+                          max="500"
+                          value={dimensions?.width || logoConfig?.logoWidth || 100}
+                          onChange={(e) => setDimensions({ ...dimensions, width: parseInt(e.target.value) || 100 })}
+                        />
+                        <Input
+                          label="Alto (px)"
+                          type="number"
+                          min="20"
+                          max="500"
+                          value={dimensions?.height === 'auto' ? '' : (dimensions?.height || logoConfig?.logoHeight || 100)}
+                          onChange={(e) => setDimensions({ ...dimensions, height: e.target.value ? parseInt(e.target.value) : 'auto' })}
+                          placeholder="auto"
+                        />
+                        <Input
+                          label="Ancho máx. (%)"
+                          type="number"
+                          min="10"
+                          max="100"
+                          value={dimensions?.maxWidth ? parseInt(dimensions.maxWidth.replace('%', '')) : parseInt(logoConfig?.logoMaxWidth || 100)}
+                          onChange={(e) => setDimensions({ ...dimensions, maxWidth: e.target.value + '%' })}
+                          suffix="%"
+                        />
+                        <Input
+                          label="Alto máx. (px)"
+                          type="number"
+                          min="20"
+                          max="500"
+                          value={dimensions?.maxHeight || logoConfig?.logoMaxHeight || 100}
+                          onChange={(e) => setDimensions({ ...dimensions, maxHeight: parseInt(e.target.value) || 100 })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Save Button */}
+                  <div className={styles.formActions}>
+                    <Button
+                      variant="secondary"
+                      onClick={() => { setDimensions({}); setLogoPreview(null); }}
+                    >
+                      <X size={16} />
+                      Cancelar
+                    </Button>
+                    <Button
+                      loading={updateLogoConfigMutation.isPending || uploadLogoMutation.isPending}
+                      onClick={handleSaveConfig}
+                    >
+                      <Save size={16} />
+                      Guardar configuración
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ===== MODALS ===== */}
@@ -873,9 +1075,17 @@ export default function AdminPage() {
             <Button
               variant="danger"
               loading={deleteCatalogo.isPending}
-              onClick={handleDeleteCatalogo}
+              onClick={() =>
+                deleteCatalogo.mutate(deleteConfirm.id, {
+                  onSuccess: () => {
+                    toast.success('Catálogo eliminado');
+                    setDeleteConfirm(null);
+                  },
+                  onError: (error) => toast.error(extractErrorMessage(error)),
+                })
+              }
             >
-              <Trash2 size={16} />
+              <Trash2 size={18} />
               Eliminar
             </Button>
           </div>

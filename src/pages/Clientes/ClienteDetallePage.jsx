@@ -21,7 +21,11 @@ import {
   CheckCircle,
   XCircle,
   Edit,
-  Copy
+  Copy,
+  FileText,
+  MessageSquare,
+  FolderOpen,
+  RefreshCw
 } from 'lucide-react';
 import { useCliente, useUpdateCliente, useReasignarCliente, useTickets, useEnviarTickets } from '../../hooks/useClientes';
 import {
@@ -43,6 +47,8 @@ import ErrorMessage from '../../components/ui/ErrorMessage';
 import ClienteFormModal from './ClienteFormModal';
 import ContactoFormModal from './ContactoFormModal';
 import OportunidadFormModal from '../Oportunidades/OportunidadFormModal';
+import ArchivosAdjuntosSection from '../../components/ArchivosAdjuntosSection';
+import HistorialComunicacionesSection from '../../components/HistorialComunicacionesSection';
 import { extractErrorMessage } from '../../utils/errorHandler';
 import { toast } from '../../store/toastStore';
 import styles from './ClienteDetallePage.module.css';
@@ -61,6 +67,7 @@ export default function ClienteDetallePage() {
   const [contactoAEliminar, setContactoAEliminar] = useState(null);
   const [opFormOpen, setOpFormOpen] = useState(false);
   const [ticketsDeshabilitado, setTicketsDeshabilitado] = useState(false);
+  const [activeTab, setActiveTab] = useState('info'); // info, contactos, archivos, comunicaciones, tickets
 
   const updateCliente = useUpdateCliente();
   const reasignar = useReasignarCliente();
@@ -154,18 +161,30 @@ export default function ClienteDetallePage() {
             </div>
           </div>
           <div className={styles.actions}>
-            <Button variant="secondary" onClick={() => setEditOpen(true)} className={styles.actionBtn}>
-              <Edit size={16} />
-              Editar
+            <Button 
+              variant="outline" 
+              onClick={() => setEditOpen(true)} 
+              className={styles.btnEditar}
+            >
+              <Pencil size={15} />
+              Editar cliente
             </Button>
-            <Button variant="secondary" onClick={() => setOpFormOpen(true)} className={styles.actionBtn}>
-              <Briefcase size={16} />
+            <Button 
+              variant="primary" 
+              onClick={() => setOpFormOpen(true)} 
+              className={styles.btnOportunidad}
+            >
+              <Briefcase size={15} />
               Nueva oportunidad
             </Button>
             {esGerenteOMas && (
-              <Button onClick={() => setReasignarOpen(true)} className={styles.actionBtn}>
-                <UserCog size={16} />
-                Reasignar
+              <Button 
+                variant="secondary" 
+                onClick={() => setReasignarOpen(true)} 
+                className={styles.btnReasignar}
+              >
+                <UserCog size={15} />
+                Reasignar ejecutivo
               </Button>
             )}
           </div>
@@ -250,21 +269,185 @@ export default function ClienteDetallePage() {
         )}
       </section>
 
-      <section className={styles.card}>
-        <header className={styles.cardHeader}>
-          <div className={styles.sectionHeader}>
-            <Users size={18} className={styles.sectionIcon} />
-            <h2 className={styles.subtitle}>Contactos</h2>
+      {/* Tab Navigation */}
+      <div className={styles.tabNav}>
+        <button
+          className={`${styles.tabBtn} ${activeTab === 'info' ? styles.active : ''}`}
+          onClick={() => setActiveTab('info')}
+        >
+          <Building2 size={16} />
+          Información
+        </button>
+        <button
+          className={`${styles.tabBtn} ${activeTab === 'contactos' ? styles.active : ''}`}
+          onClick={() => setActiveTab('contactos')}
+        >
+          <Users size={16} />
+          Contactos
+        </button>
+        <button
+          className={`${styles.tabBtn} ${activeTab === 'archivos' ? styles.active : ''}`}
+          onClick={() => setActiveTab('archivos')}
+        >
+          <FolderOpen size={16} />
+          Archivos
+        </button>
+        <button
+          className={`${styles.tabBtn} ${activeTab === 'comunicaciones' ? styles.active : ''}`}
+          onClick={() => setActiveTab('comunicaciones')}
+        >
+          <MessageSquare size={16} />
+          Comunicaciones
+        </button>
+        <button
+          className={`${styles.tabBtn} ${activeTab === 'tickets' ? styles.active : ''}`}
+          onClick={() => setActiveTab('tickets')}
+        >
+          <Ticket size={16} />
+          Tickets
+        </button>
+      </div>
+
+      {activeTab === 'info' && (
+        <section className={styles.card}>
+          <header className={styles.cardHeader}>
+            <div className={styles.sectionHeader}>
+              <Building2 size={18} className={styles.sectionIcon} />
+              <h2 className={styles.subtitle}>Información del cliente</h2>
+            </div>
+          </header>
+
+          <div className={styles.infoTabContent}>
+            {/* Datos de contacto */}
+            <div className={styles.infoGroup}>
+              <h3 className={styles.infoGroupTitle}>
+                <Phone size={15} />
+                Datos de contacto
+              </h3>
+              <dl className={styles.infoList}>
+                <div className={styles.infoRow}>
+                  <dt><Mail size={14} /> Correo principal</dt>
+                  <dd>{cliente.emailPrincipal ?? '—'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><Phone size={14} /> Teléfono principal</dt>
+                  <dd>{cliente.telefonoPrincipal ?? '—'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><Globe size={14} /> Sitio web</dt>
+                  <dd>
+                    {cliente.sitioWeb ? (
+                      <a href={cliente.sitioWeb} target="_blank" rel="noopener noreferrer">
+                        {cliente.sitioWeb}
+                      </a>
+                    ) : '—'}
+                  </dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><MapPin size={14} /> Ciudad</dt>
+                  <dd>{cliente.ciudad || '—'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><MapPin size={14} /> Estado / Región</dt>
+                  <dd>{cliente.estadoRegion || '—'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><MapPin size={14} /> País</dt>
+                  <dd>{cliente.pais || '—'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><MapPin size={14} /> Dirección</dt>
+                  <dd>{cliente.direccion || '—'}</dd>
+                </div>
+              </dl>
+            </div>
+
+            {/* Datos fiscales */}
+            <div className={styles.infoGroup}>
+              <h3 className={styles.infoGroupTitle}>
+                <FileText size={15} />
+                Datos fiscales
+              </h3>
+              <dl className={styles.infoList}>
+                <div className={styles.infoRow}>
+                  <dt><Building2 size={14} /> Razón social</dt>
+                  <dd>{cliente.razonSocial || '—'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><Copy size={14} /> RFC</dt>
+                  <dd>{cliente.rfc || '—'}</dd>
+                </div>
+              </dl>
+            </div>
+
+            {/* Datos comerciales */}
+            <div className={styles.infoGroup}>
+              <h3 className={styles.infoGroupTitle}>
+                <Briefcase size={15} />
+                Datos comerciales
+              </h3>
+              <dl className={styles.infoList}>
+                <div className={styles.infoRow}>
+                  <dt><User size={14} /> Ejecutivo asignado</dt>
+                  <dd>{cliente.ejecutivoNombre || 'Sin asignar'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><Building2 size={14} /> Tipo</dt>
+                  <dd>{cliente.tipo || '—'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><Briefcase size={14} /> Industria</dt>
+                  <dd>{cliente.industria || '—'}</dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><Calendar size={14} /> Primera compra</dt>
+                  <dd>
+                    {cliente.fechaPrimeraCompra
+                      ? new Date(cliente.fechaPrimeraCompra).toLocaleDateString('es-CO')
+                      : '—'}
+                  </dd>
+                </div>
+                <div className={styles.infoRow}>
+                  <dt><Calendar size={14} /> Fecha de creación</dt>
+                  <dd>
+                    {cliente.creadoEn || cliente.createdAt
+                      ? new Date(cliente.creadoEn ?? cliente.createdAt).toLocaleDateString('es-CO')
+                      : '—'}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            {/* Notas */}
+            {cliente.notas && (
+              <div className={styles.infoGroup}>
+                <h3 className={styles.infoGroupTitle}>
+                  <MessageSquare size={15} />
+                  Notas
+                </h3>
+                <p className={styles.notasText}>{cliente.notas}</p>
+              </div>
+            )}
           </div>
-          <Button
-            variant="secondary"
-            onClick={() => setContactoForm({ open: true, data: null })}
-            className={styles.addBtn}
-          >
-            <Plus size={16} />
-            Agregar contacto
-          </Button>
-        </header>
+        </section>
+      )}
+
+      {activeTab === 'contactos' && (
+        <section className={styles.card}>
+          <header className={styles.cardHeader}>
+            <div className={styles.sectionHeader}>
+              <Users size={18} className={styles.sectionIcon} />
+              <h2 className={styles.subtitle}>Contactos</h2>
+            </div>
+            <Button
+              variant="secondary"
+              onClick={() => setContactoForm({ open: true, data: null })}
+              className={styles.addBtn}
+            >
+              <Plus size={16} />
+              Agregar contacto
+            </Button>
+          </header>
 
         {contactosQuery.isError ? (
           <ErrorMessage message={extractErrorMessage(contactosQuery.error)} />
@@ -346,22 +529,36 @@ export default function ClienteDetallePage() {
           />
         )}
       </section>
+      )}
 
-      <section className={styles.card}>
-        <header className={styles.cardHeader}>
-          <div className={styles.sectionHeader}>
-            <Ticket size={18} className={styles.sectionIcon} />
-            <h2 className={styles.subtitle}>Tickets de soporte</h2>
-          </div>
+      {activeTab === 'archivos' && (
+        <section className={styles.card}>
+          <ArchivosAdjuntosSection tipo="clientes" entidadId={id} />
+        </section>
+      )}
+
+      {activeTab === 'comunicaciones' && (
+        <section className={styles.card}>
+          <HistorialComunicacionesSection tipo="clientes" entidadId={id} />
+        </section>
+      )}
+
+      {activeTab === 'tickets' && (
+        <section className={styles.card}>
+          <header className={styles.cardHeader}>
+            <div className={styles.sectionHeader}>
+              <Ticket size={18} className={styles.sectionIcon} />
+              <h2 className={styles.subtitle}>Tickets de soporte</h2>
+            </div>
           <Button
             variant="secondary"
             disabled={ticketsDeshabilitado || enviarTickets.isPending}
-            title={ticketsDeshabilitado ? 'Integración deshabilitada en el servidor' : undefined}
+            title={ticketsDeshabilitado ? 'Integración deshabilitada en el servidor' : 'Sincronizar tickets con el sistema de soporte técnico'}
             onClick={handleEnviarTickets}
             className={styles.sendBtn}
           >
-            <Send size={16} />
-            Enviar tickets
+            <RefreshCw size={15} className={enviarTickets.isPending ? styles.spinning : ''} />
+            Sincronizar tickets
           </Button>
         </header>
 
@@ -405,6 +602,7 @@ export default function ClienteDetallePage() {
           />
         )}
       </section>
+      )}
 
       {/* Modales */}
       <ClienteFormModal

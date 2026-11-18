@@ -1,0 +1,112 @@
+.modal {
+  max-width: 800px !important;
+  width: 100%;
+  max-height: 90vh;
+}
+
+.header {
+  padding: 16px 0 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.oportunidadInfo {
+  display: flex;
+  gap: 16px;
+}
+
+.oportunidadAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.oportunidadNombre {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.oportunidadMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tabNav {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.tabBtn:hover {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.tabBtn.active {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+}
+
+.tabBtn svg {
+  flex-shrink: 0;
+}
+
+.section {
+  min-height: 300px;
+}
+
+@media (max-width: 768px) {
+  .oportunidadInfo {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .oportunidadMeta {
+    justify-content: center;
+  }
+
+  .tabBtn {
+    flex: 1;
+    justify-content: center;
+  }
+}

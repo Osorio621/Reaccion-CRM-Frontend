@@ -13,11 +13,16 @@ import {
   HelpCircle,
   ChevronDown,
   LayoutDashboard,
+  ShieldCheck,
+  Languages,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useAuth } from '../../hooks/useAuth';
 import { APP_NAME, APP_VERSION } from '../../config';
+import { useT } from '../../i18n/useT';
 import Avatar from '../ui/Avatar';
+import Modal from '../ui/Modal';
+import Button from '../ui/Button';
 import styles from './Header.module.css';
 
 export default function Header({ onMenuClick, menuOpen, collapsed }) {
@@ -25,12 +30,15 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
   const usuario = useAuthStore((s) => s.usuario);
   const rol = useAuthStore((s) => s.rol);
   const { cerrarSesion } = useAuth();
+  const { t, lang, setLang } = useT();
   const [theme, setTheme] = useState(
     () => localStorage.getItem('theme') ?? 'light'
   );
-  const [notifications, setNotifications] = useState(3);
+  const [notifications, setNotifications] = useState(0);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -42,10 +50,11 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
     const handleClickOutside = () => {
       if (showUserMenu) setShowUserMenu(false);
       if (showNotifications) setShowNotifications(false);
+      if (showLangMenu) setShowLangMenu(false);
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, [showUserMenu, showNotifications]);
+  }, [showUserMenu, showNotifications, showLangMenu]);
 
   const toggleTheme = () => {
     setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
@@ -55,31 +64,45 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
     e.stopPropagation();
     setShowUserMenu(!showUserMenu);
     if (showNotifications) setShowNotifications(false);
+    if (showLangMenu) setShowLangMenu(false);
   };
 
   const toggleNotifications = (e) => {
     e.stopPropagation();
     setShowNotifications(!showNotifications);
     if (showUserMenu) setShowUserMenu(false);
+    if (showLangMenu) setShowLangMenu(false);
     if (notifications > 0) setNotifications(0);
+  };
+
+  const toggleLangMenu = (e) => {
+    e.stopPropagation();
+    setShowLangMenu(!showLangMenu);
+    if (showUserMenu) setShowUserMenu(false);
+    if (showNotifications) setShowNotifications(false);
   };
 
   const getPageTitle = () => {
     const path = location.pathname;
-    if (path === '/dashboard') return 'Dashboard';
-    if (path === '/pipeline') return 'Pipeline';
-    if (path === '/clientes') return 'Clientes';
-    if (path === '/oportunidades') return 'Oportunidades';
-    if (path === '/reportes') return 'Reportes';
-    if (path === '/perfil') return 'Mi Perfil';
-    if (path.startsWith('/cliente/')) return 'Detalle Cliente';
-    if (path.startsWith('/oportunidad/')) return 'Detalle Oportunidad';
+    if (path === '/dashboard') return t('pages.dashboard');
+    if (path === '/pipeline') return t('pages.pipeline');
+    if (path === '/clientes') return t('pages.clientes');
+    if (path === '/oportunidades') return t('pages.oportunidades');
+    if (path === '/reportes') return t('pages.reportes');
+    if (path === '/perfil') return t('pages.perfil');
+    if (path.startsWith('/clientes/')) return t('pages.clienteDetalle');
+    if (path.startsWith('/oportunidad/')) return t('pages.oportunidadDetalle');
     return '';
   };
 
   const nombreCompleto = [usuario?.nombre, usuario?.apellido]
     .filter(Boolean)
     .join(' ') || 'Usuario';
+
+  const LANGUAGES = [
+    { code: 'es', label: 'Español', flag: 'col' },
+    { code: 'en', label: 'English', flag: '🇺🇸' },
+  ];
 
   return (
     <header className={styles.header}>
@@ -88,7 +111,7 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
           type="button"
           className={styles.iconBtn}
           onClick={onMenuClick}
-          aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
+          aria-label={collapsed ? t('header.expandMenu') : t('header.collapseMenu')}
         >
           {collapsed ? (
             <PanelLeftOpen size={20} />
@@ -116,10 +139,50 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
           type="button"
           className={`${styles.iconBtn} ${styles.themeBtn}`}
           onClick={toggleTheme}
-          aria-label="Cambiar tema"
+          aria-label={t('header.toggleTheme')}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
+
+        {/* Selector de idioma */}
+        <div className={styles.langWrapper}>
+          <button
+            type="button"
+            className={`${styles.iconBtn} ${styles.langBtn}`}
+            onClick={toggleLangMenu}
+            aria-label={t('header.language')}
+            title={t('header.language')}
+          >
+            <Languages size={18} />
+            <span className={styles.langCode}>{lang.toUpperCase()}</span>
+          </button>
+
+          {showLangMenu && (
+            <div className={styles.langDropdown}>
+              <div className={styles.dropdownHeader}>
+                <span className={styles.dropdownTitle}>{t('header.language')}</span>
+              </div>
+              {LANGUAGES.map((l) => (
+                <button
+                  key={l.code}
+                  type="button"
+                  className={`${styles.langOption} ${lang === l.code ? styles.langOptionActive : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLang(l.code);
+                    setShowLangMenu(false);
+                  }}
+                >
+                  <span className={styles.langFlag}>{l.flag}</span>
+                  <span className={styles.langLabel}>{l.label}</span>
+                  {lang === l.code && (
+                    <span className={styles.langCheck}>✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Notificaciones */}
         <div className={styles.notificationWrapper}>
@@ -127,7 +190,7 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
             type="button"
             className={`${styles.iconBtn} ${styles.notificationBtn}`}
             onClick={toggleNotifications}
-            aria-label="Notificaciones"
+            aria-label={t('header.notifications')}
           >
             <Bell size={18} />
             {notifications > 0 && (
@@ -138,41 +201,18 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
           {showNotifications && (
             <div className={styles.notificationDropdown}>
               <div className={styles.dropdownHeader}>
-                <span className={styles.dropdownTitle}>Notificaciones</span>
-                <button className={styles.dropdownAction}>Marcar todas como leídas</button>
+                <span className={styles.dropdownTitle}>{t('header.notifications')}</span>
+                <button className={styles.dropdownAction}>{t('header.markAllRead')}</button>
               </div>
               <div className={styles.dropdownList}>
-                <div className={styles.notificationItem}>
-                  <span className={styles.notificationDot} />
-                  <div className={styles.notificationContent}>
-                    <p className={styles.notificationText}>
-                      Nueva oportunidad asignada a Juan Pérez
-                    </p>
-                    <span className={styles.notificationTime}>Hace 5 min</span>
-                  </div>
-                </div>
-                <div className={styles.notificationItem}>
-                  <span className={`${styles.notificationDot} ${styles.notificationDotWarning}`} />
-                  <div className={styles.notificationContent}>
-                    <p className={styles.notificationText}>
-                      Seguimiento vencido: Cliente ABC Corp
-                    </p>
-                    <span className={styles.notificationTime}>Hace 2 horas</span>
-                  </div>
-                </div>
-                <div className={styles.notificationItem}>
-                  <span className={`${styles.notificationDot} ${styles.notificationDotSuccess}`} />
-                  <div className={styles.notificationContent}>
-                    <p className={styles.notificationText}>
-                      Meta mensual alcanzada 🎉
-                    </p>
-                    <span className={styles.notificationTime}>Hace 1 día</span>
-                  </div>
+                <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
+                  <Bell size={24} style={{ marginBottom: '8px', opacity: 0.5 }} />
+                  <p style={{ margin: 0 }}>{t('header.noNotifications')}</p>
                 </div>
               </div>
               <div className={styles.dropdownFooter}>
                 <Link to="/notificaciones" className={styles.dropdownFooterLink}>
-                  Ver todas las notificaciones
+                  {t('header.viewAll')}
                 </Link>
               </div>
             </div>
@@ -185,7 +225,7 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
             type="button"
             className={styles.userInfo}
             onClick={toggleUserMenu}
-            aria-label="Menú de usuario"
+            aria-label={t('header.userMenu')}
           >
             <Avatar
               src={usuario?.fotoUrl}
@@ -220,20 +260,29 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
 
               <Link to="/dashboard" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
                 <LayoutDashboard size={16} />
-                Dashboard
+                {t('pages.dashboard')}
               </Link>
               <Link to="/perfil" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
                 <User size={16} />
-                Mi Perfil
+                {t('header.myProfile')}
               </Link>
-              <Link to="/configuracion" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
-                <Settings size={16} />
-                Configuración
-              </Link>
-              <Link to="/ayuda" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
+              {(rol === 'ADMIN' || rol === 'GERENTE') && (
+                <Link to="/admin" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
+                  <ShieldCheck size={16} />
+                  {t('header.systemAdmin')}
+                </Link>
+              )}
+              <button
+                type="button"
+                className={styles.dropdownItem}
+                onClick={() => {
+                  setShowUserMenu(false);
+                  setShowHelpModal(true);
+                }}
+              >
                 <HelpCircle size={16} />
-                Ayuda
-              </Link>
+                {t('header.helpSupport')}
+              </button>
 
               <div className={styles.dropdownDivider} />
 
@@ -243,7 +292,7 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
                 onClick={cerrarSesion}
               >
                 <LogOut size={16} />
-                Cerrar sesión
+                {t('header.logout')}
               </button>
             </div>
           )}
@@ -254,11 +303,56 @@ export default function Header({ onMenuClick, menuOpen, collapsed }) {
           type="button"
           className={styles.logoutMobile}
           onClick={cerrarSesion}
-          aria-label="Cerrar sesión"
+          aria-label={t('header.logout')}
         >
           <LogOut size={18} />
         </button>
       </div>
+
+      {/* Modal de Ayuda y Soporte */}
+      <Modal
+        open={showHelpModal}
+        title={t('help.title')}
+        onClose={() => setShowHelpModal(false)}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '8px 0' }}>
+          <div>
+            <h4 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)' }}>
+              {APP_NAME} <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>({APP_VERSION})</span>
+            </h4>
+            <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--color-text-muted)', lineHeight: '1.5' }}>
+              {t('help.systemDesc')}
+            </p>
+          </div>
+
+          <div style={{ background: 'var(--color-background)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+            <h5 style={{ margin: '0 0 8px', fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-text)' }}>
+              {t('help.yourRole')} <span style={{ color: 'var(--color-primary)' }}>{rol || 'Usuario'}</span>
+            </h5>
+            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.8125rem', color: 'var(--color-text-muted)', lineHeight: '1.6' }}>
+              <li><strong>{t('help.roles.ejecutivo')}:</strong> {t('help.rolesDesc_ejecutivo')}</li>
+              <li><strong>{t('help.roles.gerente')}:</strong> {t('help.rolesDesc_gerente')}</li>
+            </ul>
+          </div>
+
+          <div style={{ background: 'var(--color-primary-soft)', padding: '12px 16px', borderRadius: '8px' }}>
+            <h5 style={{ margin: '0 0 4px', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-primary)' }}>
+              {t('help.supportTitle')}
+            </h5>
+            <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--color-text)' }}>
+              {t('help.supportDesc')}
+              <br />
+              📧 <strong>soporte@reactivosdelvalle.com</strong>
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+            <Button variant="secondary" onClick={() => setShowHelpModal(false)}>
+              {t('help.close')}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </header>
   );
 }

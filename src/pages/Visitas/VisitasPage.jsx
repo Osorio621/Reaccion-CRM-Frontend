@@ -15,7 +15,8 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Eye
 } from 'lucide-react';
 import { useVisitas, useCreateVisita, useUpdateVisita } from '../../hooks/useVisitas';
 import Table from '../../components/ui/Table';
@@ -25,11 +26,13 @@ import Spinner from '../../components/ui/Spinner';
 import ErrorMessage from '../../components/ui/ErrorMessage';
 import { extractErrorMessage } from '../../utils/errorHandler';
 import VisitaFormModal from './VisitaFormModal';
+import VisitaDetalleModal from './VisitaDetalleModal';
 import styles from './VisitasPage.module.css';
 
 export default function VisitasPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editando, setEditando] = useState(null);
+  const [detalleVisita, setDetalleVisita] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOportunidad, setFilterOportunidad] = useState('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -312,17 +315,27 @@ export default function VisitasPage() {
                 key: 'acciones',
                 header: '',
                 render: (row) => (
-                  <button
-                    type="button"
-                    title="Editar visita"
-                    className={styles.iconBtn}
-                    onClick={() => {
-                      setEditando(row);
-                      setFormOpen(true);
-                    }}
-                  >
-                    <Pencil size={16} />
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      title="Ver detalle"
+                      className={styles.iconBtn}
+                      onClick={() => setDetalleVisita(row)}
+                    >
+                      <Eye size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      title="Editar visita"
+                      className={styles.iconBtn}
+                      onClick={() => {
+                        setEditando(row);
+                        setFormOpen(true);
+                      }}
+                    >
+                      <Pencil size={16} />
+                    </button>
+                  </>
                 ),
               },
             ]}
@@ -352,6 +365,12 @@ export default function VisitasPage() {
         onClose={() => setFormOpen(false)}
         onCreate={createVisita}
         onUpdate={updateVisita}
+      />
+
+      <VisitaDetalleModal
+        open={!!detalleVisita}
+        visita={detalleVisita}
+        onClose={() => setDetalleVisita(null)}
       />
     </div>
   );
